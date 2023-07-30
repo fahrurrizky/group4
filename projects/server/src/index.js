@@ -31,6 +31,15 @@ app.get("/api/greetings", (req, res, next) => {
   });
 });
 
+<<<<<<< Updated upstream
+=======
+const { userRouter, profileRouter, productRouter } = require("./routes");
+
+app.use("/auth", userRouter);
+app.use("/profile", profileRouter);
+app.use("/product", productRouter);
+
+>>>>>>> Stashed changes
 // ===========================
 
 // not found
