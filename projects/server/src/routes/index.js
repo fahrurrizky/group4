@@ -1,3 +1,4 @@
 const userRouter = require("./userRouter")
+const profileRouter = require("./profileRouter")
 
-module.exports = {userRouter}
+module.exports = {userRouter, profileRouter}

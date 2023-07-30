@@ -34,9 +34,10 @@ app.get("/api/greetings", (req, res, next) => {
   });
 });
 
-const { userRouter } = require("../src/routes");
+const { userRouter, profileRouter } = require("./routes");
 
 app.use("/auth", userRouter);
+app.use("/profile", profileRouter);
 
 // ===========================
 
