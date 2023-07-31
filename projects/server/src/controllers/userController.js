@@ -3,7 +3,7 @@ const db = require("../../models");
 const jwt = require("jsonwebtoken");
 const User = db.User;
 const path = require("path");
-const { body, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
@@ -19,6 +19,17 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+const generateToken= (user) => {
+    const payload= {
+        id: user.id,
+        role: user.role
+    };
+    const options = {
+        expiresIn: "1h",
+    }
+    return jwt.sign(payload, process.env.JWT_SECRET, options);
+}
+
 const userController = {
     loginUser: async (req, res) => {
         try {
@@ -33,7 +44,8 @@ const userController = {
             if (!comparePassword) {
                 return res.status(400).json({ message: "Wrong password" });
             }
-            const token = jwt.sign({ id: checkLogin.id, email: checkLogin.email }, process.env.JWT_SECRET);
+
+            const token = generateToken(checkLogin);
             return res.status(200).json({ message: "Login success:", token });
         } catch (error) {
             return res.status(400).json({ message: error.message });

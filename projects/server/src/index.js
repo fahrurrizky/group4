@@ -34,12 +34,13 @@ app.get("/api/greetings", (req, res, next) => {
   });
 });
 
-const { userRouter, profileRouter } = require("./routes");
+
+const { userRouter, profileRouter, productRouter } = require("./routes");
 
 app.use("/auth", userRouter);
 app.use("/profile", profileRouter);
+app.use("/product", productRouter);
 
-// ===========================
 
 // not found
 app.use((req, res, next) => {

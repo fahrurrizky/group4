@@ -1,6 +1,5 @@
 const multer = require('multer');
 const fs = require('fs');
-console.log('multer yaaaaaa')
 
 let defaultPath = "public/images";
 const storage = multer.diskStorage({
@@ -24,7 +23,7 @@ const fileFilter = (req, file, cb) => {
   if (fileType === 'jpeg' || fileType === 'png' || fileType === 'gif') {
     cb(null, true);
   } else {
-    cb(new Error("File format tidak didukung"), false);
+    cb(new Error("File format is not supported"), false);
   }
 }
 
