@@ -2,6 +2,9 @@ require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
+const path = require("path");
+
+
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -31,16 +34,13 @@ app.get("/api/greetings", (req, res, next) => {
   });
 });
 
-<<<<<<< Updated upstream
-=======
+
 const { userRouter, profileRouter, productRouter } = require("./routes");
 
 app.use("/auth", userRouter);
 app.use("/profile", profileRouter);
 app.use("/product", productRouter);
 
->>>>>>> Stashed changes
-// ===========================
 
 // not found
 app.use((req, res, next) => {
@@ -73,6 +73,8 @@ app.get("*", (req, res) => {
 });
 
 //#endregion
+
+const config = require("../config/config"); // Perbaikan path ke file config.js
 
 app.listen(PORT, (err) => {
   if (err) {
