@@ -10,9 +10,9 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
-      cartId: {
+      totalHarga: {
         type: Sequelize.INTEGER
       },
       createdAt: {
