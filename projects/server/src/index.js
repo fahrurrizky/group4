@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const path = require("path");
-
+const db = require("../models");
 
 
 const PORT = process.env.PORT || 8000;
@@ -19,6 +19,7 @@ app.use(
 );
 
 app.use(express.json());
+// db.sequelize.sync({alter: true});
 
 //#region API ROUTES
 
@@ -36,11 +37,13 @@ app.get("/api/greetings", (req, res, next) => {
 });
 
 
-const { userRouter, profileRouter, productRouter } = require("./routes");
+const { userRouter, profileRouter, productRouter, cartRouter, reportRouter } = require("./routes");
 
 app.use("/auth", userRouter);
 app.use("/profile", profileRouter);
 app.use("/product", productRouter);
+app.use("/transaction", cartRouter);
+app.use("/report", reportRouter);
 
 
 // not found

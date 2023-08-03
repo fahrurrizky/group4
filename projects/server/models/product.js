@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         quantity: DataTypes.INTEGER,
         description: DataTypes.STRING,
         createdAt: DataTypes.DATE,
-        updatedAt: DataTypes.DATE
+        updatedAt: DataTypes.DATE,
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,}
     },
     {
         sequelize,

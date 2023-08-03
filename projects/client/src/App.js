@@ -6,7 +6,7 @@ import './App.css'
 
 // Components
 import Login from './components/Auth/LoginForm';
-// import RegistrationForm from './components/components_landingpage/RegistrationForm';
+import ForgotPassword from './components/Auth/ForgotPasswordForm'
 // import VerificationPage from './components/VerificationPage';
 // import LoginForm from './components/components_landingpage/LoginForm';
 // import ChangePasswordForm from './components/ChangePasswordForm';
@@ -32,8 +32,8 @@ export default function App() {
       {/* <Navbar/> */}
       <Routes>
         <Route path="/" element={<Login/>} />
-        {/* <Route path="/register" element={<RegistrationForm/>} />
-        <Route path="/verification/:token" element={<VerificationPage/>} />
+        <Route path="/forgotpassword" element={<ForgotPassword/>} />
+        {/* <Route path="/verification/:token" element={<VerificationPage/>} />
         <Route path="/login" element={<LoginForm/>} />
         <Route path="/change-password" element={<ChangePasswordForm/>} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage/>} />

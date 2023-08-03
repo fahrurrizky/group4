@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "./Bee1.png";
+import LOGO from "../../assets/MajesticMixer.png";
 import { Link } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Box, FormControl, FormLabel, Input, Button, Heading, Text, Link as LinkChakra } from "@chakra-ui/react";

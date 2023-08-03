@@ -2,13 +2,15 @@ const router = require("express").Router();
 const {productController} = require("../controllers");
 const multer = require("../middleware/multer");
 
+
 router.get('/all-list', productController.getProductList);
 router.post('/created',multer.single("productImg") ,productController.createdProduct);
-// router.put('/update/:productId', productController.updateProduct);
-// router.delete('/products/:id', productController.deactivateProduct);
+router.patch('/delete', productController.deactivateProduct);
+router.patch('/update/:id', multer.single("productImg") ,productController.updateProduct);
+router.post('/add-category', productController.addProductCategory);
+router.put('/edit-category/:id', productController.editProductCategory);
+router.delete('/delete-category', productController.deleteProductCategory);
+router.get('/all-categories', productController.getCategory);
 
-// router.post('/categories', productController.addProductCategory);
-// router.put('/categories/:id', productController.editProductCategory);
-// router.delete('/categories/:id', productController.deleteProductCategory);
 
 module.exports = router;
