@@ -41,7 +41,7 @@ const Login = () => {
     >
       <Box bg={"rgba(0,0,0, 0.7)"} w={"full"} h={"full"} pt={5}>
         <center>
-          <a href="/">
+          <a href="/login">
             <img src={LOGO} alt="Logo" width="300px" />
           </a>
         </center>
@@ -86,8 +86,6 @@ const Login = () => {
                 .then(function (response) {
                   console.log(JSON.stringify(response.data));
                   dispatch(loginSuccess(response.data.token))
-
-                  // alert(response.data.message)
                   navigate('/')
                   setSubmitting(false);
                 })
@@ -99,12 +97,12 @@ const Login = () => {
           >
             <Form>
               <FormControl id="email" mb={3}>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <Field
                   type="text"
                   name="username"
                   as={Input}
-                  placeholder="Enter your email address"
+                  placeholder="Enter your Username"
                   // borderColor={"black"}
                 />
                 <ErrorMessage name="username" component={Text} color="red" />
@@ -143,7 +141,6 @@ const Login = () => {
                 mb={6}
                 width="full"
                 variant={"outline"}
-                // borderColor={"black"}
               >
                 Log in
               </Button>
@@ -152,7 +149,7 @@ const Login = () => {
           <Text>
             Forgot your password?{" "}
             <LinkChakra textColor={'#f05641'}>
-            <Link to="/forgotpasword" Color={"teal"}>
+            <Link to="/forgotpassword">
               Reset Password <ExternalLinkIcon mx="2px" />
             </Link>
             </LinkChakra>
