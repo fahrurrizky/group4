@@ -70,55 +70,58 @@ createdProduct: async (req, res) => {
       return res.status(400).json({ message: error.message });
     }
   },
-
   updateProduct: async (req, res) => {
-    try{ const {
-      name,
-      categoryId,
-      harga_produk,
-      quantity,
-      description,
-    } =req.body;
-    const item = await Product.findOne({
-      where: { id: req.params.id },
-    })
-    const updateClause = {};
-    if (name) { updateClause.name = name;}
-    if (categoryId) {updateClause.categoryId = categoryId;}
-    if(req.file && req.file.filename ) 
-    { await fs.unlink (item.productImg, (err) => {
-        if (err) {return res.status(500).json({
-          message: "Something went wrong",
-          error: err.message
-        });
-        }
-        updateClause.productImg = req.file.path;
-      })
-    }
-    if (harga_produk) {updateClause.harga_produk = harga_produk;}
-    if (quantity) {updateClause.quantity = quantity;}
-    if (description) {updateClause.description = description;}
-    console.log("ok");
-    await db.sequelize.transaction(async (t) => {
-      const result = await item.update(updateClause, { transaction: t,});
-      return res.status(200).json({ message: "Product updated", result, updateClause });
-    })
+    try {
+      const productId = req.params.id;
+      const {
+        name,
+        categoryId,
+        harga_produk,
+        quantity,
+        description,
+        isActive,
+      } = req.body;
   
-  }catch (error) {
-    console.log(error)
-      return res.status(400).json({ message: error.message });
+      const updatedFields = {
+        name,
+        categoryId,
+        harga_produk,
+        quantity,
+        description,
+        isActive,
+      };
+  
+      // Handle the product image update separately, only if there's a new image
+      if (req.file) {
+        updatedFields.productImg = req.file.path;
+      }
+  
+      const updatedProduct = await Product.update(updatedFields, {
+        where: { id: productId },
+      });
+  
+      if (updatedProduct[0] === 0) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+  
+      res.status(200).json({
+        message: "Product updated successfully", updatedProduct
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update product", error: error.message });
     }
   },
-
+  
   deactivateProduct: async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.params;
+    const { isActive } = req.body;
     try {
       await db.sequelize.transaction(async (t) => {
         const changeStatus = await Product.update(
-          { isActive: false },
+          { isActive: isActive },
           { where: { id }, transaction: t }
         );
-          return res.status(200).json({ message: "Product is deactivated" });
+          return res.status(200).json({ message: "Product is updated" });
       });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -160,7 +163,7 @@ createdProduct: async (req, res) => {
     },
     
     deleteProductCategory: async (req, res) => {
-      const { id } = req.body;
+      const { id } = req.params;
     
       try {
         const existingCategory = await Category.findByPk(id);

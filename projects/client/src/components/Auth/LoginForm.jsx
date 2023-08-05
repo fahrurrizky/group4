@@ -86,9 +86,14 @@ const Login = () => {
                 .then(function (response) {
                   console.log(JSON.stringify(response.data));
                   dispatch(loginSuccess(response.data.token))
+                  if(response.data.role === "Cashier"){
+                    navigate('/cashier')
+                  }else if (response.data.role === "Admin"){
+                    navigate('/admin')
+                  }
 
                   // alert(response.data.message)
-                  navigate('/')
+                  // navigate('/')
                   setSubmitting(false);
                 })
                 .catch(function (error) {

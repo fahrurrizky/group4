@@ -3,14 +3,14 @@ const {productController} = require("../controllers");
 const multer = require("../middleware/multer");
 
 
-router.get('/all-list', productController.getProductList);
-router.post('/created',multer.single("productImg") ,productController.createdProduct);
-router.patch('/delete', productController.deactivateProduct);
-router.patch('/update/:id', multer.single("productImg") ,productController.updateProduct);
-router.post('/add-category', productController.addProductCategory);
-router.put('/edit-category/:id', productController.editProductCategory);
-router.delete('/delete-category', productController.deleteProductCategory);
-router.get('/all-categories', productController.getCategory);
+router.get('/all', productController.getProductList); // ini untuk get all cart
+router.post('/cart',multer.single("productImg") ,productController.createdProduct); // ini untuk create cart
+router.patch('/cart/:id', productController.deactivateProduct); // ini untuk delete cart
+router.patch('/carti/:id', multer.single("productImg") ,productController.updateProduct); // ini untuk update cart
+router.put('/category/:id', productController.editProductCategory); // ini untuk edit category
+router.delete('/category/:id', productController.deleteProductCategory); // ini untuk delete category
+router.post('/category', productController.addProductCategory); // ini untuk add category
+router.get('/categories', productController.getCategory); // ini untuk get all category
 
 
 module.exports = router;

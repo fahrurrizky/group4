@@ -7,6 +7,9 @@ const { validationResult } = require("express-validator");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+const validator = require('validator');
+const { Op } = require("sequelize");
+
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -46,7 +49,7 @@ const userController = {
             }
 
             const token = generateToken(checkLogin);
-            return res.status(200).json({ message: "Login success:", token });
+            return res.status(200).json({ message: "Login success:", token, role: checkLogin.role });
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }
@@ -56,7 +59,7 @@ const userController = {
         try {
             const { username, email, password } = req.body;
             const existingCashier = await User.findOne({
-                where: { username },
+                where: { [Op.or]: [{ email }, { username }] },
             });
             if (existingCashier) {
                 return res.status(400).json({ message: "Cashier already exists" });
@@ -97,14 +100,14 @@ const userController = {
         try {
             const { id } = req.params;
             const { currentUsername, currentEmail, newUsername, newEmail } = req.body;
-
             if (!currentUsername || !currentEmail || !newUsername || !newEmail) {
                 return res.status(400).json({ message: "All fields are required" });
             }
-
+            
             if (!validator.isEmail(newEmail)) {
                 return res.status(400).json({ message: "Invalid email format" });
             }
+            console.log("ok")
             const cashier = await User.findOne({
                 where: { id, username: currentUsername, email: currentEmail, role: "Cashier", isActive: true },
             });
