@@ -1,10 +1,9 @@
 // Chakra imports
 import {
   Box,
-  Button,
   Flex,
   Grid,
-  Progress,
+  Icon,
   SimpleGrid,
   Stat,
   StatLabel,
@@ -25,10 +24,10 @@ import BarChart from "../../components/Charts/BarChart";
 import LineChart from "../../components/Charts/LineChart";
 import IconBox from "../../components/Icons/IconBox";
 // Custom icons
+import { FaUsers, FaStar } from "react-icons/fa";
 import {
   CartIcon,
   DocumentIcon,
-  GlobeIcon,
   WalletIcon,
 } from "../../components/Icons/Icons.js";
 import React from "react";
@@ -39,7 +38,21 @@ import {
   lineChartData,
   lineChartOptions,
 } from "../../variables/charts";
-import { pageVisits, socialTraffic } from "../../variables/general";
+import { productBestSaller, bestPerformCashier } from "../../variables/general";
+
+function Rating({ maxStars = 5, ratingValue }) {
+  return (
+    <Box>
+      {[...Array(maxStars)].map((_, index) => (
+        <Icon
+          key={index}
+          as={FaStar}
+          color={index < ratingValue ? "yellow.400" : "gray.300"}
+        />
+      ))}
+    </Box>
+  );
+}
 
 export default function Dashboard() {
   // Chakra Color Mode
@@ -53,270 +66,293 @@ export default function Dashboard() {
   const { colorMode } = useColorMode();
 
   return (
-    <Flex flexDirection='column' mt={'8'}>
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing='24px' mb='20px'>
-        <Card minH='125px'>
-          <Flex direction='column'>
+    <Flex flexDirection="column" mt={"8"}>
+      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px" mb="20px">
+        <Card minH="125px">
+          <Flex direction="column">
             <Flex
-              flexDirection='row'
-              align='center'
-              justify='center'
-              w='100%'
-              mb='25px'
-              >
-              <Stat me='auto'>
+              flexDirection="row"
+              align="center"
+              justify="center"
+              w="100%"
+              mb="25px"
+            >
+              <Stat me="auto">
                 <StatLabel
-                  fontSize='xs'
-                  color='white'
-                  fontWeight='bold'
-                  textTransform='uppercase'>
+                  fontSize="xs"
+                  color="white"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                >
                   Today's Money
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize='lg' color={textColor} fontWeight='bold'>
+                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
                     $53,897
                   </StatNumber>
                 </Flex>
               </Stat>
               <IconBox
-                borderRadius='50%'
-                as='box'
+                borderRadius="50%"
+                as="box"
                 h={"45px"}
                 w={"45px"}
-                bg={iconBlue}>
+                bg={iconBlue}
+              >
                 <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
-            <Text color='white' fontSize='sm'>
-              <Text as='span' color='green.400' fontWeight='bold'>
+            <Text color="white" fontSize="sm">
+              <Text as="span" color="green.400" fontWeight="bold">
                 +3.48%{" "}
               </Text>
-              Since last month
+              Since last day
             </Text>
           </Flex>
         </Card>
-        <Card minH='125px'>
-          <Flex direction='column'>
+
+        <Card minH="125px">
+          <Flex direction="column">
             <Flex
-              flexDirection='row'
-              align='center'
-              justify='center'
-              w='100%'
-              mb='25px'>
-              <Stat me='auto'>
+              flexDirection="row"
+              align="center"
+              justify="center"
+              w="100%"
+              mb="25px"
+            >
+              <Stat me="auto">
                 <StatLabel
-                  fontSize='xs'
-                  color='white'
-                  fontWeight='bold'
-                  textTransform='uppercase'>
-                  Today's Users
+                  fontSize="xs"
+                  color="white"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                >
+                  Today's Customers
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize='lg' color={textColor} fontWeight='bold'>
-                    $3,200
+                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
+                    +200
                   </StatNumber>
                 </Flex>
               </Stat>
               <IconBox
-                borderRadius='50%'
-                as='box'
+                borderRadius="50%"
+                as="box"
                 h={"45px"}
                 w={"45px"}
-                bg={iconBlue}>
-                <GlobeIcon h={"24px"} w={"24px"} color={iconBoxInside} />
+                bg={iconBlue}
+              >
+                <FaUsers
+                  size={"25px"}
+                  h={"24px"}
+                  w={"24px"}
+                  color={iconBoxInside}
+                />
               </IconBox>
             </Flex>
-            <Text color='white' fontSize='sm'>
-              <Text as='span' color='green.400' fontWeight='bold'>
+            <Text color="white" fontSize="sm">
+              <Text as="span" color="green.400" fontWeight="bold">
                 +5.2%{" "}
               </Text>
-              Since last month
+              Since last day
             </Text>
           </Flex>
         </Card>
-        <Card minH='125px'>
-          <Flex direction='column'>
+
+        <Card minH="125px">
+          <Flex direction="column">
             <Flex
-              flexDirection='row'
-              align='center'
-              justify='center'
-              w='100%'
-              mb='25px'>
-              <Stat me='auto'>
+              flexDirection="row"
+              align="center"
+              justify="center"
+              w="100%"
+              mb="25px"
+            >
+              <Stat me="auto">
                 <StatLabel
-                  fontSize='xs'
-                  color='white'
-                  fontWeight='bold'
-                  textTransform='uppercase'>
-                  New Clients
+                  fontSize="xs"
+                  color="white"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                >
+                  Product Sold
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize='lg' color={textColor} fontWeight='bold'>
-                    +2,503
+                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
+                    +130
                   </StatNumber>
                 </Flex>
               </Stat>
               <IconBox
-                borderRadius='50%'
-                as='box'
+                borderRadius="50%"
+                as="box"
                 h={"45px"}
                 w={"45px"}
-                bg={iconBlue}>
+                bg={iconBlue}
+              >
                 <DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
-            <Text color='white' fontSize='sm'>
-              <Text as='span' color='red.500' fontWeight='bold'>
+            <Text color="white" fontSize="sm">
+              <Text as="span" color="red.500" fontWeight="bold">
                 -2.82%{" "}
               </Text>
-              Since last month
+              Since last day
             </Text>
           </Flex>
         </Card>
-        <Card minH='125px'>
-          <Flex direction='column'>
+
+        <Card minH="125px">
+          <Flex direction="column">
             <Flex
-              flexDirection='row'
-              align='center'
-              justify='center'
-              w='100%'
-              mb='25px'>
-              <Stat me='auto'>
+              flexDirection="row"
+              align="center"
+              justify="center"
+              w="100%"
+              mb="25px"
+            >
+              <Stat me="auto">
                 <StatLabel
-                  fontSize='xs'
-                  color='white'
-                  fontWeight='bold'
-                  textTransform='uppercase'>
+                  fontSize="xs"
+                  color="white"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                >
                   Total Sales
                 </StatLabel>
                 <Flex>
-                  <StatNumber fontSize='lg' color={textColor} fontWeight='bold'>
+                  <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
                     $173,000
                   </StatNumber>
                 </Flex>
               </Stat>
               <IconBox
-                borderRadius='50%'
-                as='box'
+                borderRadius="50%"
+                as="box"
                 h={"45px"}
                 w={"45px"}
-                bg={iconBlue}>
+                bg={iconBlue}
+              >
                 <CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
-            <Text color='white' fontSize='sm'>
-              <Text as='span' color='green.400' fontWeight='bold'>
+            <Text color="white" fontSize="sm">
+              <Text as="span" color="green.400" fontWeight="bold">
                 +8.12%{" "}
               </Text>
-              Since last month
+              Since last day
             </Text>
           </Flex>
         </Card>
       </SimpleGrid>
-      <Grid
-        templateColumns={{ sm: "1fr", lg: "2fr 1fr" }}
-        templateRows={{ lg: "repeat(2, auto)" }}
-        gap='20px'>
-        <Card
-          bg={
-            colorMode === "dark"
-              ? "navy.800"
-              : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
-          }
-          p='0px'
-          maxW={{ sm: "320px", md: "100%" }}>
-          <Flex direction='column' mb='40px' p='28px 0px 0px 22px'>
-            <Text color='#fff' fontSize='lg' fontWeight='bold' mb='6px'>
+
+      <Grid templateColumns={{ sm: "1fr", lg: "2fr 1fr" }} templateRows={{ lg: "repeat(2, auto)" }} gap="20px">
+        <Card bg={colorMode === "dark" ? "navy.800" : "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"} p="0px" maxW={{ sm: "320px", md: "100%" }}>
+          <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
+            <Text color="#fff" fontSize="lg" fontWeight="bold" mb="6px">
               Sales Overview
             </Text>
-            <Text color='#fff' fontSize='sm'>
-              <Text as='span' color='green.400' fontWeight='bold'>
+            <Text color="#fff" fontSize="sm">
+              <Text as="span" color="green.400" fontWeight="bold">
                 (+5) more{" "}
               </Text>
               in 2022
             </Text>
           </Flex>
-          <Box minH='300px'>
+          <Box minH="300px">
             <LineChart
-              chartData={lineChartData}
+              chartData= {lineChartData}
               chartOptions={lineChartOptions}
               borderRadius={"3xl"}
             />
           </Box>
         </Card>
-        <Card p='0px' maxW={{ sm: "320px", md: "100%" }}>
-          <Flex direction='column' mb='40px' p='28px 0px 0px 22px'>
-            <Text color='white' fontSize='sm' fontWeight='bold' mb='6px'>
-              PERFORMANCE
+
+        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+          <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
+            <Text color="white" fontSize="sm" fontWeight="bold" mb="6px">
+              PERFORMANCE CASHIER
             </Text>
-            <Text color={textColor} fontSize='lg' fontWeight='bold'>
+            <Text color={textColor} fontSize="lg" fontWeight="bold">
               Total orders
             </Text>
           </Flex>
-          <Box minH='300px'>
+          <Box minH="300px">
             <BarChart chartData={barChartData} chartOptions={barChartOptions} />
           </Box>
         </Card>
-        <Card p='0px' maxW={{ sm: "320px", md: "100%" }}>
-          <Flex direction='column'>
-            <Flex align='center' justify='space-between' p='22px'>
-              <Text fontSize='lg' color={textColor} fontWeight='bold'>
-                Page visits
+
+        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+          <Flex direction="column">
+            <Flex align="center" p="22px">
+              <Text fontSize="lg" color={textColor} fontWeight="bold">
+                Product Best Seller
               </Text>
-              <Button variant='primary' maxH='30px'>
-                SEE ALL
-              </Button>
             </Flex>
-            <Box overflow={{ sm: "scroll", lg: "hidden" }}>
+            <Box overflow={{ sm: "scroll", lg: "hidden" }} width={"100%"}>
               <Table>
                 <Thead>
                   <Tr bg={tableRowColor}>
-                    <Th color='white' borderColor={borderColor}>
-                      Page name
+                    <Th color="black" borderColor={borderColor}>
+                      Product Name
                     </Th>
-                    <Th color='white' borderColor={borderColor}>
-                      Visitors
+                    <Th color="black" borderColor={borderColor}>
+                      Category
                     </Th>
-                    <Th color='white' borderColor={borderColor}>
-                      Unique users
+                    <Th
+                      color="black"
+                      borderColor={borderColor}
+                      textAlign={"center"}
+                    >
+                      Monthly Sales
                     </Th>
-                    <Th color='white' borderColor={borderColor}>
-                      Bounce rate
+                    <Th
+                      color="black"
+                      borderColor={borderColor}
+                      textAlign={"center"}
+                    >
+                      Price
                     </Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {pageVisits.map((el, index, arr) => {
+                  {productBestSaller.map((el, index, arr) => {
                     return (
                       <Tr key={index}>
                         <Td
                           color={textTableColor}
-                          fontSize='sm'
-                          fontWeight='bold'
+                          fontSize="sm"
+                          fontWeight="bold"
                           borderColor={borderColor}
-                          border={index === arr.length - 1 ? "none" : null}>
-                          {el.pageName}
+                          border={index === arr.length - 1 ? "none" : null}
+                        >
+                          {el.productName}
                         </Td>
                         <Td
                           color={textTableColor}
-                          fontSize='sm'
+                          fontSize="sm"
                           border={index === arr.length - 1 ? "none" : null}
-                          borderColor={borderColor}>
-                          {el.visitors}
+                          borderColor={borderColor}
+                        >
+                          {el.categoryProduct}
                         </Td>
                         <Td
                           color={textTableColor}
-                          fontSize='sm'
+                          textAlign={"center"}
+                          fontSize="sm"
                           border={index === arr.length - 1 ? "none" : null}
-                          borderColor={borderColor}>
-                          {el.uniqueUsers}
+                          borderColor={borderColor}
+                        >
+                          {el.monthlySales}
                         </Td>
                         <Td
                           color={textTableColor}
-                          fontSize='sm'
+                          textAlign={"center"}
+                          fontSize="sm"
                           border={index === arr.length - 1 ? "none" : null}
-                          borderColor={borderColor}>
-                          {el.bounceRate}
+                          borderColor={borderColor}
+                        >
+                          {el.price}
                         </Td>
                       </Tr>
                     );
@@ -326,67 +362,61 @@ export default function Dashboard() {
             </Box>
           </Flex>
         </Card>
-        <Card p='0px' maxW={{ sm: "320px", md: "100%" }}>
-          <Flex direction='column'>
-            <Flex align='center' justify='space-between' p='22px'>
-              <Text fontSize='lg' color={textColor} fontWeight='bold'>
-                Social traffic
+
+        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+          <Flex direction="column">
+            <Flex align="center" p="22px">
+              <Text fontSize="lg" color={textColor} fontWeight="bold">
+                Best Perform Cashier
               </Text>
-              <Button variant='primary' maxH='30px'>
-                SEE ALL
-              </Button>
             </Flex>
           </Flex>
+
           <Box overflow={{ sm: "scroll", lg: "hidden" }}>
             <Table>
               <Thead>
                 <Tr bg={tableRowColor}>
-                  <Th color='white' borderColor={borderColor}>
-                    Referral
+                  <Th color="black" borderColor={borderColor}>
+                    Name
                   </Th>
-                  <Th color='white' borderColor={borderColor}>
-                    Visitors
+                  <Th color="black" borderColor={borderColor} p={"0"}>
+                    Highest Sales
                   </Th>
-                  <Th color='white' borderColor={borderColor}></Th>
+                  <Th color="black" borderColor={borderColor}>
+                    Best Service
+                  </Th>
                 </Tr>
               </Thead>
+
               <Tbody>
-                {socialTraffic.map((el, index, arr) => {
+                {bestPerformCashier.map((el, index, arr) => {
                   return (
                     <Tr key={index}>
                       <Td
                         color={textTableColor}
-                        fontSize='sm'
-                        fontWeight='bold'
+                        fontSize="sm"
+                        fontWeight="bold"
                         borderColor={borderColor}
-                        border={index === arr.length - 1 ? "none" : null}>
-                        {el.referral}
+                        border={index === arr.length - 1 ? "none" : null}
+                      >
+                        {el.name}
                       </Td>
                       <Td
                         color={textTableColor}
-                        fontSize='sm'
+                        fontSize="sm"
                         borderColor={borderColor}
-                        border={index === arr.length - 1 ? "none" : null}>
-                        {el.visitors}
+                        border={index === arr.length - 1 ? "none" : null}
+                      >
+                        {el.highestSales}
                       </Td>
                       <Td
+                        textAlign={"center"}
                         color={textTableColor}
-                        fontSize='sm'
+                        fontSize="sm"
                         borderColor={borderColor}
-                        border={index === arr.length - 1 ? "none" : null}>
-                        <Flex align='center'>
-                          <Text
-                            color={textTableColor}
-                            fontWeight='bold'
-                            fontSize='sm'
-                            me='12px'>{`${el.percentage}%`}</Text>
-                          <Progress
-                            size='xs'
-                            colorScheme={el.color}
-                            value={el.percentage}
-                            minW='120px'
-                          />
-                        </Flex>
+                        border={index === arr.length - 1 ? "none" : null}
+                      >
+                        <Rating maxStars={5} ratingValue={parseInt(el.highestSales.replace(/\D/g, "")) / 100} />
                       </Td>
                     </Tr>
                   );

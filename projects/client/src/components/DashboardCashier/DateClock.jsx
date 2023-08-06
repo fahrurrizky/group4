@@ -18,6 +18,7 @@ export default function CurrentDate() {
   const currentDate = new Date();
   const date = currentDate.getDate(); // Get the date (1-31)
   const month = currentDate.getMonth(); // Get the month (0-11)
+  const year = currentDate.getFullYear(); // Get the year (e.g., 2023)
   const hours = currentDate.getHours(); // Get the hours (0-23)
   const minutes = currentDate.getMinutes(); // Get the minutes (0-59)
 

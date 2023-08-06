@@ -1,3 +1,5 @@
+
+// CHART DATA DASHBOARD ADMIN
 export const barChartData = [
   {
     name: "Sales",
@@ -15,7 +17,7 @@ export const barChartOptions = {
     theme: "dark",
   },
   xaxis: {
-    categories: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    categories: ["Andre", "Miyabi", "Gifari", "Febry", "Alleta", "Mia Kalifa"],
     labels: {
       style: {
         colors: "#A0AEC0",
@@ -71,12 +73,12 @@ export const barChartOptions = {
 
 export const lineChartData = [
   {
-    name: "Mobile apps",
+    name: "Product",
     data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
   },
   {
-    name: "Websites",
-    data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+    name: "Sales",
+    data: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   },
 ];
 

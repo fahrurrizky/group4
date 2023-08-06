@@ -1,7 +1,7 @@
-import { useState } from "react";
 import LOGO from "../../assets/MajesticMixer.png";
 import { Link } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import Quote from "../../variables/Quote"
 import {
   useToast,
   Box,
@@ -69,6 +69,7 @@ const ForgotPassword = () => {
       h="800px"
     >
       <Box bg={"rgba(0,0,0, 0.7)"} w={"full"} h={"full"} pt={5}>
+        <Quote/>
         <center>
           <a href="/login">
             <img src={LOGO} alt="Logo" width="300px" />
