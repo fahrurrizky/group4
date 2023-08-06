@@ -79,6 +79,7 @@ const cartController = {
             if(!cartItem){
                 return res.satus(400).json({message: "Product not found"})
             }
+            console.log("ok")
             if (quantity <= 0){
                 await cartItem.destroy();
             } else {
