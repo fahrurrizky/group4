@@ -5,9 +5,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import LOGO from "../../assets/MajesticMixer.png";
 import { ExternalLinkIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { loginSuccess } from "../../redux/reducers/authReducer";
-import {useSelector, useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
+import Quote from "../../variables/Quote"
 import {
   Box,
   FormControl,
@@ -40,6 +41,7 @@ const Login = () => {
       h="800px"
     >
       <Box bg={"rgba(0,0,0, 0.7)"} w={"full"} h={"full"} pt={5}>
+        <Quote/>
         <center>
           <a href="/login">
             <img src={LOGO} alt="Logo" width="300px" />
@@ -88,6 +90,7 @@ const Login = () => {
                   dispatch(loginSuccess(response.data.token))
                   navigate('/')
                   setSubmitting(false);
+
                 })
                 .catch(function (error) {
                   console.log(error);

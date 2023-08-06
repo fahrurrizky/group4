@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import LOGO from "../../assets/MajesticMixer.png";
-
+import Quote from "../../variables/Quote"
 import {
   useToast,
   Box,
@@ -80,6 +80,7 @@ const ResetPasswordForm = () => {
       h="800px"
     >
       <Box bg={"rgba(0,0,0, 0.7)"} w={"full"} h={"full"} pt={5}>
+        <Quote/>
         <center>
           <a href="/login">
             <img src={LOGO} alt="Logo" width="300px" />

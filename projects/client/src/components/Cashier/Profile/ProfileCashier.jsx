@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
-import { Container, Text, Stack, Avatar, Icon, Image, Box, Flex, Input, Button } from '@chakra-ui/react';
+import { Container, Text, Stack, Avatar, Icon, Image, Box, Input, Button, Flex } from '@chakra-ui/react';
 // Here we have used react-icons package for the icon
 import { ImQuotesLeft } from 'react-icons/im';
-import MyBranch from "../../components/DashboardAdmin/MyBranch.jsx"
+import MyBranch from "../../DashboardAdmin/MyBranch"
 
 
 interface TestimonialAttributes {

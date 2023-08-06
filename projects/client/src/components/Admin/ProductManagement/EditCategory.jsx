@@ -3,7 +3,6 @@ import { ImEnter, ImExit } from "react-icons/im";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import {
   Flex,
-  Text,
   ButtonGroup,
   IconButton,
   Input,
@@ -11,7 +10,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
@@ -77,53 +75,7 @@ function EditCategory({ isOpen, onClose }) {
               />
               </ButtonGroup>
             </Flex>
-            {/* <Flex>
-              <Input
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                fontSize="xl"
-                minW={'250'}
-                size={'sm'}
-                mr={'5'}
-              />
-              <ButtonGroup>
-              <IconButton
-                icon={<ImEnter />}
-                onClick={handleSave}
-                variant={"outline"}
-                size={"sm"}
-                textColor="white"
-                w="100%"
-                _hover={{ bgColor: "green", color: "white" }}
-              />
-              <IconButton
-                icon={<ImExit />}
-                onClick={onClose}
-                variant={"outline"}
-                size={"sm"}
-                textColor="white"
-                w="100%"
-                _hover={{ bgColor: "blue", color: "white" }}
-              />
-              <IconButton
-                icon={<RiDeleteBin5Fill />}
-                // onClick={onClose}
-                variant={"outline"}
-                size={"sm"}
-                textColor="white"
-                w="100%"
-                _hover={{ bgColor: "red", color: "white" }}
-              />
-              </ButtonGroup>
-            </Flex> */}
           </ModalBody>
-          {/* <ModalFooter> */}
-            {/* <Text fontSize={'xs'} ml={'5'} mb={'2'}>
-                Hover Green Accept Edit <br/>
-                Hover Blue Cancel Edit<br/>
-                Hover Red Delete Category
-            </Text> */}
-          {/* </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>
