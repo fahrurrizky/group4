@@ -5,11 +5,11 @@ const resetPassMid = require("../middleware/resetPassMid")
 
 
 router.post("/login", userController.loginUser);
-router.post("/create-cashier", passwordValidator, userController.createCashier);
-router.patch("/delete-cashier", userController.deleteCashier);
-router.patch("/update-cashier/:id", userController.updateCashier);
-router.put("/forgot-password", userController.forgotPassword);
-router.patch("/reset-password",resetPassMid, userController.resetPassword);
+router.post("/cashier", passwordValidator, userController.createCashier); // ini untuk create cashier
+router.patch("/cashier", userController.deleteCashier); // ini untuk delete cashier
+router.patch("/cashier/:id", userController.updateCashier); // ini untuk update cashier
+router.put("/password", userController.forgotPassword); // ini untuk forgot password
+router.patch("/password",resetPassMid, userController.resetPassword); // ini untuk reset password
 
 
 module.exports = router
