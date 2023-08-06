@@ -126,7 +126,6 @@ createdProduct: async (req, res) => {
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }},
-
     addProductCategory: async (req, res) => {
       const { name } = req.body; 
       try {
@@ -177,7 +176,6 @@ createdProduct: async (req, res) => {
         return res.status(400).json({ message: error.message });
       }
     },
-
     getCategory: async (req, res) => {
       try {
         const result = await Category.findAll();
