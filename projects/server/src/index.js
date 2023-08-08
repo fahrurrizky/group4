@@ -1,9 +1,11 @@
-require("dotenv/config");
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const { join } = require("path");
 const db = require("../models");
+
 
 
 const PORT = process.env.PORT || 8000;
@@ -44,6 +46,8 @@ app.use("/profile", profileRouter);
 app.use("/product", productRouter);
 app.use("/transaction", cartRouter);
 app.use("/report", reportRouter);
+app.use("/api/public", express.static(path.resolve(__dirname,"../public")));
+
 
 
 // not found

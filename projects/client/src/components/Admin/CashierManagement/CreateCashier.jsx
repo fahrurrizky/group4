@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Button,
   Modal,
@@ -16,6 +15,8 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { useState } from 'react';
+import axios from 'axios';
 
 const CreateCashier = ({ isOpen, onClose }) => {
   const [username, setUsername] = useState('');
@@ -37,15 +38,23 @@ const CreateCashier = ({ isOpen, onClose }) => {
       alert('Please enter a valid email and password (password should be at least 6 characters)');
       return;
     }
+    const requestBody = {
+      username,
+      email,
+      password,
+    };
+    try {
+      const response = axios.post('http://localhost:8000/auth/cashier', requestBody);
+      console.log('Cashier created:', response.data);
 
-    // Reset the form after submission
-    setUsername('');
-    setEmail('');
-    setPassword('');
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      onClose();
 
-    // Close the modal after form submission
-    onClose();
-  };
+    } catch (error) {
+      console.log(error);
+    } };
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);

@@ -1,23 +1,24 @@
-import React, { ReactNode } from 'react';
-import { Container, Flex, FlexProps, useColorModeValue } from '@chakra-ui/react';
+import React, { ReactNode, useState, useEffect } from 'react';
+import { Container, Flex, FlexProps, Text, useColorModeValue } from '@chakra-ui/react';
 
-const PaginationContainer = () => {
+const PaginationContainer = ({currentPage, setCurrentPage, selectedProduct}) => {
   return (
     <Container
       d="flex"
       maxWidth="7xl"
       w="full"
-    //   h="218px"
       alignItems="center"
-    //   p={{ base: 5, sm: 10 }}
     >
-      <Pagination />
+      <Pagination
+        currentPage={currentPage}
+        onPageChange={(newPage) => setCurrentPage(newPage)}
+        howNext={selectedProduct && selectedProduct.length > 0}
+      />
     </Container>
   );
 };
 
-// Ideally, only the Pagination component should be used. The PaginationContainer component is used to style the preview.
-const Pagination = () => {
+const Pagination = ({ currentPage, onPageChange, showNext }) => {
   return (
     <Flex
       as="nav"
@@ -27,28 +28,32 @@ const Pagination = () => {
       alignItems="center"
       mt={{ base: 3, md: 0 }}
     >
-      <PaginationButton borderTopLeftRadius="md" borderBottomLeftRadius="md">
+      <PaginationButton
+        onClick={() => onPageChange(currentPage - 1)}
+        isDisabled={currentPage === 1}
+      >
         Previous
       </PaginationButton>
-      <PaginationButton isActive>1</PaginationButton>
-      <PaginationButton>2</PaginationButton>
-      <PaginationButton>3</PaginationButton>
-      <PaginationButton>4</PaginationButton>
-      <PaginationButton>5</PaginationButton>
-      <PaginationButton borderTopRightRadius="md" borderBottomRightRadius="md">
+      {[1, 2, 3, 4, 5,6,7,8,9].map((pageNumber) => (
+        <PaginationButton
+          key={pageNumber}
+          isActive={pageNumber === currentPage}
+          onClick={() => onPageChange(pageNumber)}
+        >
+          {pageNumber}
+        </PaginationButton>
+      ))}
+      <PaginationButton
+        onClick={() => onPageChange(currentPage + 1)}
+        isDisabled={!showNext}
+      >
         Next
       </PaginationButton>
     </Flex>
   );
 };
 
-interface PaginationButtonProps extends FlexProps {
-  children: ReactNode;
-  isActive?: boolean;
-  isDisabled?: boolean;
-}
-
-const PaginationButton = ({ children, isDisabled, isActive, ...props }: PaginationButtonProps) => {
+const PaginationButton = ({ children, isDisabled, isActive, ...props }) => {
   const activeStyle = {
     bg: useColorModeValue('gray.300', 'gray.700')
   };
