@@ -1,7 +1,4 @@
-"use client";
-import { useDisclosure } from "@chakra-ui/react";
-import { BiAddToQueue } from "react-icons/bi";
-import { MdEditDocument } from "react-icons/md";
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Link,
@@ -14,91 +11,135 @@ import {
   Button,
   Spacer,
   Switch,
-} from "@chakra-ui/react";
-import CategoryList from "./CategoryList";
-import Pagination from "./PaginationProduct";
-import CreateProduct from "./CreateProduct";
-import EditProduct from "./EditProduct";
+  InputGroup,
+  InputLeftElement,
+  Input,
+  InputRightAddon,
+} from '@chakra-ui/react';
+import { BiAddToQueue } from 'react-icons/bi';
+import { MdEditDocument } from 'react-icons/md';
+import { useDisclosure } from '@chakra-ui/react';
+import CategoryList from './CategoryList';
+import Pagination from './PaginationProduct';
+import CreateProduct from './CreateProduct';
+import EditProduct from './EditProduct';
+import axios from 'axios';
+import { Search2Icon } from '@chakra-ui/icons';
 
-const product = [
-  {
-    image: "https://images.unsplash.com/photo-1654929748677-f9d0dd6ff0d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1671116808598-689abda6369f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1599419685838-28e405ea05b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1621428674699-90ec7bae03c9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1180&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1614313511387-1436a4480ebb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1180&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1584526663341-2274881c5d7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2787&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1614313489567-aec5db706669?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1558150052-fddeedcf27d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1771&q=80",
-    categoryName: "Whiskey",
-    productName: "Jack Daniel's",
-    price: '58',
-    description: "Jack Daniel's is made from a unique process of charcoal mellowing, where the whiskey is filtered through charcoal before aging, giving it its characteristic flavor profile"
-  },
-];
-  
+const Product = ({searchResult}) => {
+  const bgColor = useColorModeValue('rgb(255,255,255, 0.9)', 'gray.800');
+  const {
+    isOpen: isCreateProductOpen,
+    onOpen: onCreateProductOpen,
+    onClose: onCreateProductClose,
+  } = useDisclosure();
+  const {
+    isOpen: isEditProductOpen,
+    onOpen: onEditProductOpen,
+    onClose: onEditProductClose,
+  } = useDisclosure();
+  const [selectedProduct, setSelectedProduct] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState([]);
+  const [price, setPrice] = useState('');
+  const [category, setCategory] = useState('');
+  const [name, setName] = useState('');
 
-export default function Product() {
-  const bgColor = useColorModeValue("rgb(255,255,255, 0.9)", "gray.800");
-  const { isOpen: isCreateProductOpen, onOpen: onCreateProductOpen, onClose: onCreateProductClose } = useDisclosure();
-  const { isOpen: isEditProductOpen, onOpen: onEditProductOpen, onClose: onEditProductClose } = useDisclosure();
-  
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/product/all?page=${currentPage}&&name=${searchQuery}&&orderBy=${price}&&categoryId=${category}&&orderByName=${name}`);
+      setSelectedProduct(response.data.productList);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+  }, [currentPage, price, category, name]);
+
+  const handleEditClick = (product) => {
+    setEditingProduct(product);
+    onEditProductOpen();
+  };
+  const handleSortPrice = (e) => {
+    setPrice(e.target.value);
+  }
+  const handleSortName = (e) => {
+    setName(e.target.value);
+  }
+const handlefilterCategory = (value) => {
+  setCategory(value);
+}
+  const handleProductUpdated = (updatedProduct) => {
+    // Implement logic to update product list or perform other necessary actions
+    console.log('Product updated:', updatedProduct);
+    const updatedProducts = selectedProduct.map((product) =>
+      product.id === updatedProduct.id ? updatedProduct : product
+    );
+    setSelectedProduct(updatedProducts);
+  };
+
+  const deactiveProduct = async (id) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:8000/product/cart/deactivate?id=${id}`
+      );
+      alert(res.data.message);
+      fetchProduct();
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const activeProduct = async (id) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:8000/product/cart/activate?id=${id}`
+      );
+      alert(res.data.message);
+      fetchProduct();
+    } catch (err) {
+      alert(err);
+    }
+  }
+
   return (
     <Box>
-      <CategoryList/>
+            <Box width={'100%'}>
+              <InputGroup borderRadius={"full"} size="sm">
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Search2Icon color="gray.600" />}
+                />
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  border="1px solid white"
+                  rounded={"full"}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <InputRightAddon p={0} borderRightRadius={"full"}>
+                  <Button size="sm" rounded={"full"} variant={"outline"} onClick={fetchProduct}>
+                    Search
+                  </Button>
+                </InputRightAddon>
+              </InputGroup>
+            </Box>
+      <CategoryList  price={price} handleSortPrice={handleSortPrice} category={category} setCategory={setCategory} handlefilterCategory={handlefilterCategory} name={name} handleSortName={handleSortName} setName={setName}/>
       <Flex w="100%" gap={6} wrap="wrap" ml={4} mb={4}>
-        {product.map((obj, index) => (
+        {selectedProduct?.map((obj, index) => (
           <Box
-            key={index}
+            key={obj.id}
             align={'center'}
             role="group"
             p={4}
-            maxW="260px" // Adjusted width
+            maxW="260px"
             w="full"
             bg={bgColor}
-            boxShadow="md" // Adjusted shadow
+            boxShadow="md"
             rounded="lg"
             pos="relative"
             zIndex={1}
@@ -108,55 +149,55 @@ export default function Product() {
               rounded="lg"
               mt={-8}
               pos="relative"
-              height="120px" // Adjusted height
+              height="120px"
               _after={{
-                transition: "all .3s ease",
+                transition: 'all .3s ease',
                 content: '""',
-                w: "full",
-                h: "full",
-                pos: "absolute",
+                w: 'full',
+                h: 'full',
+                pos: 'absolute',
                 top: 2,
                 left: 0,
-                backgroundImage: `url(${obj.image})`,
-                filter: "blur(10px)", // Adjusted blur
+                backgroundImage: `url(${obj.productImg})`,
+                filter: 'blur(10px)',
                 zIndex: -1,
               }}
               _groupHover={{
                 _after: {
-                  filter: "blur(15px)", // Adjusted hover blur
+                  filter: 'blur(15px)',
                 },
               }}
             >
               <Image
                 borderRadius="xl"
-                height={130} // Adjusted height
-                width={190} // Adjusted width
-                objectFit='contain' // Changed to "cover"
-                src={obj.image}
+                height={130}
+                width={190}
+                objectFit="contain"
+                src={`http://localhost:8000/api/${obj.productImg}`}
                 alt="#"
               />
             </Box>
             <Stack pt={2} align="center">
               <Text
                 color="black"
-                fontSize="sm" // Adjusted font size
+                fontSize="sm"
                 textTransform="uppercase"
                 fontFamily="monospace"
               >
-                {obj.categoryName}
+                {obj.categoryId}
               </Text>
               <Heading
                 color="black"
                 fontFamily="cursive"
-                fontSize="lg" // Adjusted font size
+                fontSize="lg"
                 fontWeight={500}
-                m={0} // Removed negative margin
+                m={0}
               >
-                {obj.productName}
+                {obj.name}
               </Heading>
               <Stack color="black" align="center">
-                <Text fontWeight={600} fontSize="md"> {/* Adjusted font weight and size */}
-                  ${obj.price}
+                <Text fontWeight={600} fontSize="md">
+                  ${obj.harga_produk}
                 </Text>
                 <Text
                   fontSize="xs"
@@ -170,36 +211,59 @@ export default function Product() {
             </Stack>
             <Flex>
               <Button variant="link">
-                <Switch colorScheme="facebook" />
+                <Switch 
+                colorScheme={obj.isActive ? 'green' : 'gray'}
+                isChecked={obj.isActive}
+                onChange={() => {
+                  if (obj.isActive) {
+                    deactiveProduct(obj.id);
+                  } else {
+                    activeProduct(obj.id);
+                  }
+                }}
+              />
               </Button>
               <Spacer />
               <Button variant="link">
-                <MdEditDocument color="black" size={20} onClick={onEditProductOpen} /> {/* Adjusted size */}
-                <EditProduct isOpen={isEditProductOpen} onClose={onEditProductClose} />
+                <MdEditDocument
+                  color="black"
+                  size={20}
+                  onClick={() => handleEditClick(obj)}
+                />
+                <EditProduct
+                  isOpen={isEditProductOpen}
+                  onClose={onEditProductClose}
+                  selectedProduct={editingProduct}
+                  onProductUpdated={handleProductUpdated}
+                />
               </Button>
             </Flex>
-            {product.length - 1 !== index }
+            {selectedProduct.length - 1 !== index}
           </Box>
         ))}
       </Flex>
-      <Pagination />
+      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} selectedProduct={selectedProduct} />
       <Link>
         <Button
-        position={"fixed"}
-        zIndex={60000}
-        bottom={5}
-        right={5}
-        p={6}
-        justifyContent={"center"}
-        alignItems={"center"}
-        rounded={"full"}
-        bgColor={"rgba(255,255,255, 0.7)"}
+          position="fixed"
+          zIndex={60000}
+          bottom={5}
+          right={5}
+          p={6}
+          justifyContent="center"
+          alignItems="center"
+          rounded="full"
+          bgColor="rgba(255,255,255, 0.7)"
         >
-          <BiAddToQueue size={"30px"} onClick={onCreateProductOpen} />
+          <BiAddToQueue size={30} onClick={onCreateProductOpen} />
         </Button>
-        <CreateProduct isOpen={isCreateProductOpen} onClose={onCreateProductClose} />
+        <CreateProduct
+          isOpen={isCreateProductOpen}
+          onClose={onCreateProductClose}
+        />
       </Link>
     </Box>
-
   );
-}
+};
+
+export default Product;

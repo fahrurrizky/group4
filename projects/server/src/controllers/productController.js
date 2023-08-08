@@ -5,8 +5,11 @@ const { Op } = require('sequelize')
 const fs = require('fs').promises
 const productController = {
   getProductList: async (req, res) => {
-    const { name, harga_produk, categoryId, orderBy, page = 1, limit = 10 } = req.query;
-    const orderDirection = orderBy === 'name_asc' || orderBy === 'harga_produk_asc' ? 'ASC' : 'DESC';
+    const { name, harga_produk, categoryId, orderBy, orderByName, page = 1, limit = 10 } = req.query;
+    const orderName = orderByName === 'name_asc' ? 'ASC' : 'DESC';
+    const orderPrice =  orderBy === 'harga_produk_asc' ? 'ASC' : 'DESC';
+    console.log('orderPrice', orderPrice)
+    console.log('orderName', orderName)
     const offset = (page - 1) * limit;
   
     try {
@@ -23,10 +26,11 @@ const productController = {
       }
   
       const order = [];
-      if (orderBy === 'name_asc' || orderBy === 'name_desc') {
-        order.push(['name', orderDirection]);
-      } else if (orderBy === 'harga_produk_asc' || orderBy === 'harga_produk_desc') {
-        order.push(['harga_produk', orderDirection]);
+      if (orderByName === 'name_asc' || orderByName === 'name_desc') {
+        order.push(['name', orderName]);
+      }
+      if (orderBy === 'harga_produk_asc' || orderBy === 'harga_produk_desc') {
+        order.push(['harga_produk', orderPrice]);
       } else {
         // Default sorting when no valid orderBy parameter is provided
         order.push(['createdAt', 'DESC']);
@@ -112,20 +116,33 @@ createdProduct: async (req, res) => {
     }
   },
   
-  deactivateProduct: async (req, res) => {
-    const { id } = req.params;
-    const { isActive } = req.body;
+  activateProduct: async (req, res) => {
     try {
+      const productId = req.query.id;
       await db.sequelize.transaction(async (t) => {
-        const changeStatus = await Product.update(
-          { isActive: isActive },
-          { where: { id }, transaction: t }
+        const product = await Product.update(
+          { isActive: true },
+          { where: { id: productId }, transaction: t }
         );
-          return res.status(200).json({ message: "Product is updated" });
-      });
-    } catch (error) {
+        res.status(200).json({ message: "Product activated" });
+      })
+    }catch (error) {
       return res.status(400).json({ message: error.message });
     }},
+
+    deactiveProduct: async (req, res) => {
+      try {
+        const productId = req.query.id;
+        await db.sequelize.transaction(async (t) => {
+          const product = await Product.update(
+            { isActive: false },
+            { where: { id: productId }, transaction: t }
+          );
+          res.status(200).json({ message: "Product deactivated" });
+        })
+      }catch (error) {
+        return res.status(400).json({ message: error.message });
+      }},
     addProductCategory: async (req, res) => {
       const { name } = req.body; 
       try {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Button,
@@ -15,28 +15,25 @@ import { useDisclosure } from "@chakra-ui/react";
 import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import CreateCategory from "./CreateCategory";
 import EditCategory from "./EditCategory";
+import axios from "axios";
 
+const CategoryList = ({price, setPrice, handleSortPrice, category, handleFilterCategory, setCategory, handleSortName, setName, name}) => {
+const [categories, setCategories] = useState([]);
+console.log("categories", category);
+  const fetchCategory = async () => {
+    try {
+      const {data} = await axios.get(`http://localhost:8000/product/categories`);
+      console.log("dafas", data);
+      setCategories(data.result);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-const category = [
-  {
-    categoryName: "Whiskey",
-  },
-  {
-    categoryName: "Wine",
-  },
-  {
-    categoryName: "Vodka",
-  },
-  {
-    categoryName: "Rum",
-  },
-  {
-    categoryName: "Beer",
-  },
-];
+  useEffect(() => {
+    fetchCategory();
+  }, [])
 
-
-const CategoryList = () => {
   const {
     isOpen: isCreateCategoryOpen,
     onOpen: onCreateCategoryOpen,
@@ -52,14 +49,14 @@ const CategoryList = () => {
     <Box mb={'10'}>
       <Box ml={'5'} mb={'3'} mt={"5"} style={{ display: "flex", justifyContent: "flex-end" }}>
         <Menu>
-          <Select placeholder="Sort by product" w={'md'}>
-            <option value="option1">A-Z</option>
-            <option value="option2">Z-A</option>
+          <Select value={name} onChange={handleSortName} placeholder="Sort by product" w={'md'}>
+            <option value="name_asc">A-Z</option>
+            <option value="name_desc">Z-A</option>
           </Select>
           <Spacer/>
-          <Select placeholder="Sort by price" w={'md'}>
-            <option value="option1">Ascending</option>
-            <option value="option2">Descending</option>
+          <Select value={price} onChange={handleSortPrice} placeholder="Sort by price" w={'md'}>
+            <option value="harga_produk_asc" >Ascending</option>
+            <option value="harga_produk_desc" >Descending</option>
           </Select>
           <MenuButton
             as={Button}
@@ -94,16 +91,18 @@ const CategoryList = () => {
         pt={"2"}
         templateColumns="repeat(5, 1fr)"
       >
-        {category.map((item) => (
-        <Button
+        {categories.map((item) => (
+        <Button key={item.id}
           variant={"outline"}
           size={"sm"}
           textColor="white"
           w="100%"
           _hover={{ bgColor: "white", color: "black" }}
           textTransform={"uppercase"}
+          value={category}
+          onClick={() => setCategory(item.id)}
         >
-          {item.categoryName}
+          {item.name}
         </Button>
         ))}
       </Grid>

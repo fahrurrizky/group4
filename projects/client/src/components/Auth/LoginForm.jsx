@@ -86,11 +86,13 @@ const Login = () => {
                   }
                 )
                 .then(function (response) {
-                  console.log(JSON.stringify(response.data));
-                  dispatch(loginSuccess(response.data.token))
-                  navigate('/')
+                  if(response.data.role === 'admin'){
+                    navigate('/admin')
+                  } else if(response.data.role === 'cashier'){
+                    navigate('/cashier')
+                  }
                   setSubmitting(false);
-
+                  localStorage.setItem("token", response.data.token);
                 })
                 .catch(function (error) {
                   console.log(error);
