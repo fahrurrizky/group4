@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Grid,
   Button,
@@ -17,25 +18,6 @@ import CreateCategory from "./CreateCategory";
 import EditCategory from "./EditCategory";
 
 
-const category = [
-  {
-    categoryName: "Whiskey",
-  },
-  {
-    categoryName: "Wine",
-  },
-  {
-    categoryName: "Vodka",
-  },
-  {
-    categoryName: "Rum",
-  },
-  {
-    categoryName: "Beer",
-  },
-];
-
-
 const CategoryList = () => {
   const {
     isOpen: isCreateCategoryOpen,
@@ -48,6 +30,26 @@ const CategoryList = () => {
     onClose: onEditCategoryClose,
   } = useDisclosure();
 
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/product/categories");
+      setCategories(response.data.result);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const handleCreateCategorySuccess = () => {
+    fetchCategories(); // Refresh the category list
+    onCreateCategoryClose(); // Close the create category modal
+  };
+  
   return (
     <Box mb={'10'}>
       <Box ml={'5'} mb={'3'} mt={"5"} style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -81,12 +83,17 @@ const CategoryList = () => {
           </MenuList>
         </Menu>
       </Box>
+      <EditCategory isOpen={isEditCategoryOpen} onClose={onEditCategoryClose} />
       <CreateCategory
         isOpen={isCreateCategoryOpen}
         onClose={onCreateCategoryClose}
+        onCreateSuccess={handleCreateCategorySuccess}
       />
-      <EditCategory isOpen={isEditCategoryOpen} onClose={onEditCategoryClose} />
-
+      {/* <CreateCategory
+        isOpen={isCreateCategoryOpen}
+        onClose={onCreateCategoryClose}
+        onCreateSuccess={handleCreateCategorySuccess}
+      /> */}
       <Grid
         gap={"5"}
         fontFamily={"monospace"}
@@ -94,17 +101,18 @@ const CategoryList = () => {
         pt={"2"}
         templateColumns="repeat(5, 1fr)"
       >
-        {category.map((item) => (
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          textColor="white"
-          w="100%"
-          _hover={{ bgColor: "white", color: "black" }}
-          textTransform={"uppercase"}
-        >
-          {item.categoryName}
-        </Button>
+        {categories.map((item) => (
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            textColor="white"
+            w="100%"
+            _hover={{ bgColor: "white", color: "black" }}
+            textTransform={"uppercase"}
+            key={item.name} // Add a unique key for each category
+          >
+            {item.name}
+          </Button>
         ))}
       </Grid>
     </Box>

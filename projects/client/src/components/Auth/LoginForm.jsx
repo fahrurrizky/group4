@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -26,6 +26,12 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  useEffect (() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard-admin");
+    }
+  });
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -88,7 +94,11 @@ const Login = () => {
                 .then(function (response) {
                   console.log(JSON.stringify(response.data));
                   dispatch(loginSuccess(response.data.token))
-                  navigate('/')
+                  if(response.data.role === "Cashier"){
+                    navigate("/dashboard-cashier")
+                  }else if (response.data.role === "Admin") {
+                    navigate('/dashboard-admin')
+                  }
                   setSubmitting(false);
 
                 })

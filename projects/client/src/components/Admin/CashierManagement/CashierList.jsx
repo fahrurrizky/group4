@@ -133,5 +133,3 @@ const CashierList = () => {
 };
 
 export default CashierList;
-
-

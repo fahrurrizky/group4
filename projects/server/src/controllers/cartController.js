@@ -131,6 +131,7 @@ const cartController = {
 
     checkout: async (req, res) => {
         const { id } = req.user;
+        console.log("sjhdfd",id)
 
         try {
             let cart = await Cart.findOne({ where: { userId: id } });
@@ -145,7 +146,7 @@ const cartController = {
             }
             
             const transaction = await Transaction.create({
-                userId: id,
+              userId: id,
                 totalPrice: totalPrice,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -166,6 +167,7 @@ const cartController = {
 
             return res.status(200).json({ message: "Checkout successful", transaction });
         } catch (error) {
+          console.log(error)
             return res.status(400).json({ message: error.message });
         }
     }

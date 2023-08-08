@@ -34,8 +34,9 @@ const ForgotPassword = () => {
 
   const handleSubmit = (values) => {
     axios
-      .put("http://localhost:8000/auth/forgot-password", {
+      .put("http://localhost:8000/auth/password", {
         email: values.email,
+        FE_URL: "http://localhost:3000"
       })
       .then(function (response) {
         navigate("/login");

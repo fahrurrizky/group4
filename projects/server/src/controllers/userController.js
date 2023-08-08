@@ -12,7 +12,7 @@ const { Op } = require("sequelize");
 
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: "hotmail",
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -162,7 +162,7 @@ const userController = {
 async function sendEmail(email, token) {
     const templatePath = path.resolve(__dirname, "../emails/forgotPassword.html");
     const templateContent = await fs.promises.readFile(templatePath, "utf-8");
-    const html = templateContent.replace("{{redirect}}", `http://localhost:8000/reset-password/${token}`);
+    const html = templateContent.replace("{{redirect}}", `http://localhost:3000/reset-password/${token}`);
 
     await transporter.sendMail({
         from: process.env.EMAIL_USER,

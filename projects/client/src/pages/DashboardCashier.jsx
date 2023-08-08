@@ -1,9 +1,18 @@
-import React from "react";
+import React, {useEffect} from "react";
+import { useNavigate } from 'react-router-dom'
 import { Box, Flex } from "@chakra-ui/react";
 
 import Sidebar from "../components/DashboardCashier/Sidebar";
 
 const DashboardCashier = () => {
+  const navigate = useNavigate()
+  useEffect (() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/dashboard-cashier");
+    }
+  });
+  
   return (
     <Box
     bgImage={

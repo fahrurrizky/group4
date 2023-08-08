@@ -2,18 +2,18 @@ require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const { join } = require("path");
 const db = require("../models");
-
 
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
   cors({
     origin: [
-      // process.env.WHITELISTED_DOMAIN &&
-      //   process.env.WHITELISTED_DOMAIN.split(","),
-      "http://localhost:3000"
+      process.env.WHITELISTED_DOMAIN &&
+        process.env.WHITELISTED_DOMAIN.split(","),
+      // "http://localhost:3000"
     ],
   })
 );
@@ -36,15 +36,21 @@ app.get("/api/greetings", (req, res, next) => {
   });
 });
 
-
-const { userRouter, profileRouter, productRouter, cartRouter, reportRouter } = require("./routes");
+const {
+  userRouter,
+  profileRouter,
+  productRouter,
+  cartRouter,
+  reportRouter,
+} = require("./routes");
 
 app.use("/auth", userRouter);
 app.use("/profile", profileRouter);
 app.use("/product", productRouter);
 app.use("/transaction", cartRouter);
 app.use("/report", reportRouter);
-
+// For get image in public
+app.use("/public", express.static(path.join(__dirname, "../public")));
 
 // not found
 app.use((req, res, next) => {
@@ -68,7 +74,7 @@ app.use((err, req, res, next) => {
 //#endregion
 
 //#region CLIENT
-const clientPath = "../../client/build";
+const clientPath = "../../client/public";
 app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -10,63 +10,127 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BsTrash } from "react-icons/bs";
+import axios from "axios";
 
 const Cart = () => {
-  const products = [
-    {
-      id: 1,
-      name: "Jack Daniel's",
-      image:
-        "https://images.unsplash.com/photo-1654929748677-f9d0dd6ff0d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      price: 10,
-    },
-    {
-      id: 2,
-      name: "Guinness",
-      image:
-        "https://images.unsplash.com/photo-1654929748677-f9d0dd6ff0d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      price: 20,
-    },
-    {
-      id: 3,
-      name: "Smirnoff",
-      image:
-        "https://images.unsplash.com/photo-1654929748677-f9d0dd6ff0d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      price: 30,
-    },
-    {
-      id: 4,
-      name: "Bacardi",
-      image:
-        "https://images.unsplash.com/photo-1654929748677-f9d0dd6ff0d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      price: 25,
-    },
-  ];
+  const [cartItems, setCartItems] = useState([]);
+  const [moneyReceived, setMoneyReceived] = useState("");
+  const [productNames, setProductNames] = useState({});
 
-  const totalCartValue = products.reduce((total, product) => total + product.price, 0);
-  const [moneyReceived, setMoneyReceived] = useState(""); // Add state for money received
-  const refundAmount = moneyReceived ? parseFloat(moneyReceived) - totalCartValue : 0; // Calculate refund based on input value
+  useEffect(() => {
+    fetchCartItems();
+    fetchProductNames();
+  }, []);
+
+  const fetchCartItems = async () => {
+    const token = localStorage.getItem("token"); // Replace with your actual token key
+
+    if (!token) {
+      console.error("No token found in local storage");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/transaction/list",
+        config
+      );
+      setCartItems(response.data.cartItems);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  const fetchProductNames = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/product/all");
+      const productNamesMap = {};
+      response.data.productList.forEach((product) => {
+        productNamesMap[product.id] = {
+          name: product.name,
+          image: product.productImg,
+        };
+      });
+      setProductNames(productNamesMap);
+    } catch (error) {
+      console.error("Error fetching product names:", error);
+    }
+  };
+
+  const totalCartValue = cartItems.reduce(
+    (total, item) => total + item.price,
+    0
+  );
+  const refundAmount = moneyReceived
+    ? parseFloat(moneyReceived) - totalCartValue
+    : 0;
+
+  const handleRemoveItem = async (productId) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found in local storage");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      await axios.patch(
+        "http://localhost:8000/transaction/remove",
+        {
+          productId: productId,
+          quantity: 0, // Change the quantity as needed
+        },
+        config
+      );
+
+      // After successful removal, update the cart items
+      fetchCartItems();
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
 
   return (
     <Box direction="column" justifyContent="center" mt={"8"}>
       <Box>
-        {products.map((product) => (
-          <Box key={product.id} mt={"2"}>
+        {cartItems.map((item) => (
+          <Box key={item.id} mt={"2"}>
             <Flex gap={"5"} mx={"3"}>
               <Box>
-                <Image src={product.image} objectFit="contain" width="50px" />
+                <Image
+                  src={`http://localhost:8000/${
+                    productNames[item.productId]?.image
+                  }`}
+                  objectFit="contain"
+                  width="50px"
+                  alt={item.id}
+                />
               </Box>
               <Box fontSize={"18px"}>
-                <Text>{product.name}</Text>
-                <Text>${product.price}</Text>
+                <Text>{productNames[item.productId]?.name}</Text>
+                <Text>${item.price}</Text>
               </Box>
               <Spacer />
               <Box fontSize={"18px"}>
-                <Text>Qty</Text>
-                <Text> 5 </Text>
+                <Text>Qty: {item.quantity}</Text>
               </Box>
               <Box mt={"3"}>
-                <Button _hover={{ bgColor: "red", color: "white" }}>
+                <Button
+                  onClick={() => handleRemoveItem(item.productId)}
+                  _hover={{ bgColor: "red", color: "white" }}
+                >
                   <BsTrash />
                 </Button>
               </Box>
@@ -81,21 +145,25 @@ const Cart = () => {
         <Text fontSize={"18px"}>${totalCartValue}</Text>
       </Flex>
       <Divider mx={"5"} w={"90%"} />
-      {/* Value for Money Customer */}
       <Flex m={"5"}>
         <Text fontSize={"18px"}>Money Received:</Text>
         <Spacer />
-        <Input textAlign={'right'} type="text" textColor={'cyan'} placeholder="Money" w={'140px'} size={'md'}
-        value={moneyReceived} // Bind the value to the state
-        onChange={(e) => setMoneyReceived(e.target.value)} // Update the state on input change
+        <Input
+          textAlign={"right"}
+          type="text"
+          textColor={"cyan"}
+          placeholder="Money"
+          w={"140px"}
+          size={"md"}
+          value={moneyReceived}
+          onChange={(e) => setMoneyReceived(e.target.value)}
         />
       </Flex>
       <Divider mx={"5"} w={"90%"} />
-      {/* Refund Money for Customer */}
       <Flex m={"5"}>
         <Text fontSize={"18px"}>Refund for Customer:</Text>
         <Spacer />
-        <Text fontSize={"18px"}>${refundAmount.toFixed(2)}</Text> {/* Display refund amount */}
+        <Text fontSize={"18px"}>${refundAmount.toFixed(2)}</Text>
       </Flex>
       <Divider mx={"5"} w={"90%"} />
     </Box>

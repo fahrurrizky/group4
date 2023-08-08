@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Flex, Box, Button, VStack } from "@chakra-ui/react";
 import LOGO from "../../assets/MajesticMixer.png";
 import { FaSignOutAlt, FaUsersCog, FaHome, FaCreativeCommonsBy, FaShoppingCart, FaSkullCrossbones } from "react-icons/fa";
@@ -14,6 +15,7 @@ import Cashier from "../Admin/CashierManagement/CashierList";
 
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const [activePage, setActivePage] = useState("dashboard");
   const renderPage = () => {
     switch (activePage) {
@@ -28,6 +30,11 @@ const Sidebar = () => {
       default:
         return null;
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
@@ -53,7 +60,7 @@ const Sidebar = () => {
         <Calender/>
         </Box>
         <Button fontSize={'small'} onClick={() => setActivePage("home")} m={'1'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaUsersCog size={'17'}/>&nbsp;&nbsp;&nbsp;&nbsp;Help & Information</Button>
-        <Button fontSize={'small'} onClick={() => setActivePage("home")} m={'1'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaSignOutAlt/>&nbsp;&nbsp;&nbsp;&nbsp;Sign Out</Button>
+        <Button fontSize={'small'} onClick={handleLogout} m={'1'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaSignOutAlt/>&nbsp;&nbsp;&nbsp;&nbsp;Sign Out</Button>
       </VStack>
       <Box ml={'4'} w={'100%'} overflow="scroll">
         <Navbar position="sticky" top="0" width="100%"/>

@@ -12,7 +12,7 @@ import logo from "../../assets/img/avatars/logoFooter.png";
 
 const links = [
   // "Blog",
-  "Made with 🍻 by Andren & Rizky",
+  "Made with 🍻 by Andre & Rizky",
   "Careers",
   "Sign up",
   "Terms of use",
