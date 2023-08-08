@@ -28,7 +28,7 @@ const generateToken= (user) => {
         role: user.role
     };
     const options = {
-        expiresIn: "1h",
+        expiresIn: "24h",
     }
     return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
@@ -79,22 +79,58 @@ const userController = {
         }
     },
 
-    deleteCashier: async (req, res) => {
+    getAllCashiers: async (req, res) => {
         try {
-            const { id } = req.body;
-            const cashier = await User.findOne({
-                where: { id, role: "Cashier", isActive: true },
+            const cashiers = await User.findAll({
+                where: { role: "Cashier" },
             });
-            if (!cashier) {
-                return res.status(400).json({ message: "Cashier not found" });
-            }
-            cashier.isActive = false;
-            await cashier.save();
-            return res.status(200).json({ message: "Cashier deleted" });
+            return res.status(200).json(cashiers);
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }
     },
+
+    getCashierLogin: async (req, res) => {
+        try{
+            const {id} = req.user;
+            const user = await User.findByPk(id)
+            return res.status(200).json(user)
+        }catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
+    cashierActive: async (req, res) => {
+        try {
+          const cashierId = req.query.id;
+    
+          await db.sequelize.transaction(async (t) => {
+            const updateCashier = await User.update(
+              { isActive: true },
+              { where: { id: cashierId }, transaction: t }
+            );
+    
+            res.status(200).json({ message: "Cashier active!" });
+          });
+        } catch (error) {
+          res.status(500).json({ message: "Error updating cashier status", error: error.message })
+        }
+      },
+    
+      cashierInActive: async (req, res) => {
+        try {
+          const cashierId = req.query.id
+          await db.sequelize.transaction(async (t) => {
+            const updateCashier = await User.update(
+              { isActive: false },
+              { where: { id: cashierId }, transaction: t }
+            );
+            res.status(200).json({ message: "Cashier inactive!" });
+          })
+        } catch (error) {
+          res.status(500).json({ message: "Error updating cashier status", error: error.message })
+        }
+      },
 
     updateCashier: async (req, res) => {
         try {
@@ -107,7 +143,6 @@ const userController = {
             if (!validator.isEmail(newEmail)) {
                 return res.status(400).json({ message: "Invalid email format" });
             }
-            console.log("ok")
             const cashier = await User.findOne({
                 where: { id, username: currentUsername, email: currentEmail, role: "Cashier", isActive: true },
             });

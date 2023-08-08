@@ -1,68 +1,88 @@
-import { useDisclosure } from "@chakra-ui/react";
-import { Link, Input, Spacer, Flex, Switch, Heading, Text, Stack, Avatar, Divider, Icon, Box, Button } from '@chakra-ui/react';
-// Here we have used react-icons package for the icon
+import { useDisclosure, Button, Link, Input, Spacer, Flex, Switch, Heading, Text, Stack, Avatar, Divider, Icon, Box, Image } from '@chakra-ui/react';
 import { ImQuotesLeft } from 'react-icons/im';
-import { BiAddToQueue, BiEdit } from "react-icons/bi";
-import CreateCashier from "./CreateCashier";
-import EditCashier from "./EditCashier";
-
-const testimonials = [
-  {
-    username: 'Alletta_',
-    email: 'alletta@gamil.com',
-    position: 'Cashier',
-    company: 'The Majestic Mixer',
-    image:
-      'https://images.unsplash.com/photo-1453171194557-e6c630bb8af0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-    content: `Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit
-      rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam,
-      risus at semper`
-  },
-  {
-    username: 'Alletta_',
-    email: 'alletta@gamil.com',
-    position: 'Cashier',
-    company: 'The Majestic Mixer',
-    image:
-      'https://i.pinimg.com/564x/89/d8/fc/89d8fc1478576edaa94d4a9aef3b9865.jpg',
-    content: `Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit
-      rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam,
-      risus at semper`
-  },
-  {
-    username: 'Jena_Karlis',
-    email: 'benparker@gamil.com',
-    position: 'Cashier',
-    company: 'The Majestic Mixer',
-    image:
-    'https://images.unsplash.com/photo-1541182388496-ac92a3230e4c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDZ8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-    content: `Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit
-    rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et.`
-  },
-  {
-    username: 'Alletta_',
-    email: 'alletta@gamil.com',
-    position: 'Cashier',
-    company: 'The Majestic Mixer',
-    image:
-      'https://i.pinimg.com/564x/74/e0/25/74e0257e1f4a03a92363511624b3c299.jpg',
-    content: `Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit
-      rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam,
-      risus at semper`
-  },
-];
+import { BiAddToQueue, BiEdit } from 'react-icons/bi';
+import CreateCashier from './CreateCashier';
+import EditCashier from './EditCashier';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const CashierList = () => {
   const { isOpen: isCreateCashierOpen, onOpen: onCreateCashierOpen, onClose: onCreateCashierClose } = useDisclosure();
   const { isOpen: isEditCashierOpen, onOpen: onEditCashierOpen, onClose: onEditCashierClose } = useDisclosure();
+  const [cashiers, setCashiers] = useState([]);
+  const [selectedCashier, setSelectedCashier] = useState(null);
+
+  const handleEditCashier = (cashier) => {
+    setSelectedCashier(cashier);
+    onEditCashierOpen();
+  };
+
+  const handleUpdateCashiers = async () => {
+    try {
+      // Make a PATCH request to update the selected cashier data
+      await axios.patch(`http://localhost:8000/auth/cashier/${selectedCashier.id}`, {
+        currentUsername: selectedCashier.username,
+        currentEmail: selectedCashier.email,
+        newUsername: selectedCashier.newUsername,
+        newEmail: selectedCashier.newEmail,
+      });
+
+      // After successfully updating cashier data, close the modal
+      onEditCashierClose();
+
+      // Fetch the updated list of cashiers from the server and update the state
+      const response = await axios.get('http://localhost:8000/auth/cashier');
+      setCashiers(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchCashiers = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/auth/cashier');
+      setCashiers(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deactiveCashier = async (id) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:8000/auth/cashier/deactivate?id=${id}`
+      );
+      alert(res.data.message);
+      fetchCashiers();
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const activeCashier = async (id) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:8000/auth/cashier/activate?id=${id}`
+      );
+      alert(res.data.message);
+      fetchCashiers();
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+
+
+  useEffect(() => {
+    fetchCashiers();
+  }, []);
 
   return (
     <Box maxW="10xl" px={{ base: 5, md: 20 }}>
-      <Heading fontWeight={'thin'}>
-        Cashier list
-      </Heading>
+      <Heading fontWeight={'thin'}>Cashier list</Heading>
       <Divider my={6} />
-      {testimonials.map((obj, index) => (
+      {cashiers.map((obj, index) => (
         <Box key={index}>
           <Stack direction={{ base: 'column', sm: 'row' }} spacing={10} pt={1} justify="center">
             <Avatar
@@ -72,14 +92,15 @@ const CashierList = () => {
               showBorder={true}
               borderColor="white.400"
               name="avatar"
-              src={obj.image}
+              src={`http://localhost:8000/api/${obj.imgProfile}`}
               d={{ base: 'none', sm: 'block' }}
             />
             <Stack direction="column" spacing={4} textAlign="left" maxW="4xl">
               <Icon as={ImQuotesLeft} w={8} h={8} color="white" />
               <Text fontSize="md" fontWeight="medium">
                 <i>
-                {obj.content}
+                  Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget
+                  id, aliquam eget nibh et. Maecen aliquam, risus at semper
                 </i>
               </Text>
               <Stack alignItems={{ base: 'center', sm: 'flex-start' }} spacing={0}>
@@ -90,44 +111,38 @@ const CashierList = () => {
                   {obj.email}
                 </Text>
                 <Text fontWeight="medium" fontSize="sm" color="white">
-                 <i>
-                 {obj.position}, {obj.company}
-                </i> 
+                  <i>{obj.role}, The Majestic Mixer</i>
                 </Text>
               </Stack>
             </Stack>
           </Stack>
-          <Flex mt={'2'}> 
-          <Spacer />
-            <Input color={"rgba(0,0,0,0)"} variant={'unstyled'} size={'xs'} type="file" width={'9%'} />
-            <Button colorScheme="white" size="xs" variant={'outline'}>
-            <i>Change Avatar</i>
+          <Flex mt={'2'}>
+            <Spacer />
+            <Switch  colorScheme={obj.isActive ? 'green' : 'gray'} isChecked={obj.isActive} ml={'2'} alignSelf={'center'} onChange={() => {
+              if(obj.isActive){
+                deactiveCashier(obj.id)
+              } else {
+                activeCashier(obj.id)
+              }
+            }} />
+            <Button variant={'link'} onClick={() => handleEditCashier(obj)}>
+              <BiEdit color="white" size={'23'} />
             </Button>
-          <Switch colorScheme={"facebook"} ml={'2'} alignSelf={'center'}/>
-          <Button variant={'link'}>
-          <BiEdit color='white' size={'23'} onClick={onEditCashierOpen}/>
-          <EditCashier isOpen={isEditCashierOpen} onClose={onEditCashierClose} />
-          </Button>
           </Flex>
-          {testimonials.length - 1 !== index && <Divider my={5} />}
+          {cashiers.length - 1 !== index && <Divider my={5} />}
         </Box>
       ))}
       <Link>
-        <Button
-          position={"fixed"}
-          zIndex={1}
-          bottom={5}
-          right={5}
-          p={6}
-          justifyContent={"center"}
-          alignItems={"center"}
-          rounded={"full"}
-          bgColor={"rgba(255,255,255, 0.7)"}
-        >
-          <BiAddToQueue size={"30px"} onClick={onCreateCashierOpen} />
+        <Button position={'fixed'} zIndex={1} bottom={5} right={5} p={6} justifyContent={'center'} alignItems={'center'} rounded={'full'} bgColor={'rgba(255,255,255, 0.7)'}>
+          <BiAddToQueue size={'30px'} onClick={onCreateCashierOpen} />
         </Button>
         <CreateCashier isOpen={isCreateCashierOpen} onClose={onCreateCashierClose} />
       </Link>
+
+      {/* Render the EditCashier modal here */}
+      {selectedCashier && (
+        <EditCashier isOpen={isEditCashierOpen} onClose={onEditCashierClose} cashier={selectedCashier} onUpdate={handleUpdateCashiers} />
+      )}
     </Box>
   );
 };

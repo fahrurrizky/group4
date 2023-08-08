@@ -100,7 +100,7 @@ const Login = () => {
                     navigate('/dashboard-admin')
                   }
                   setSubmitting(false);
-
+                  localStorage.setItem("token", response.data.token);
                 })
                 .catch(function (error) {
                   console.log(error);

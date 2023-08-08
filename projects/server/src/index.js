@@ -1,4 +1,4 @@
-require("dotenv/config");
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -49,8 +49,9 @@ app.use("/profile", profileRouter);
 app.use("/product", productRouter);
 app.use("/transaction", cartRouter);
 app.use("/report", reportRouter);
-// For get image in public
 app.use("/public", express.static(path.join(__dirname, "../public")));
+
+app.use("/api/public", express.static(path.resolve(__dirname,"../public")));
 
 // not found
 app.use((req, res, next) => {
