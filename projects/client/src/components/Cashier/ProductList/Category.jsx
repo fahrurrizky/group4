@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Grid,
   Button,
@@ -10,33 +11,96 @@ import {
   Box,
   Spacer,
   useDisclosure,
+  useToast,
   Flex,
 } from "@chakra-ui/react";
 import { MdShoppingCartCheckout } from "react-icons/md";
 import { FiDollarSign } from "react-icons/fi";
 import { AiOutlineClear } from "react-icons/ai";
+
 import Cart from "../Transaction/Cart";
 
-const category = [
-  {
-    categoryName: "Whiskey",
-  },
-  {
-    categoryName: "Wine",
-  },
-  {
-    categoryName: "Vodka",
-  },
-  {
-    categoryName: "Rum",
-  },
-  {
-    categoryName: "Beer",
-  },
-];
-
 const Category = () => {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [categories, setCategories] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchCartItems();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/product/categories"
+      );
+      setCategories(response.data.result);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchCartItems = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found in local storage");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/transaction/list",
+        config
+      );
+      setCartItems(response.data.cartItems);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  const handlePayment = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found in local storage");
+      return;
+    }
+
+    try {
+      await axios.post(
+        "http://localhost:8000/transaction/make",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCartItems([]);
+      fetchCartItems();
+      // Show success toast
+      toast({
+        title: "Payment Successful",
+        description: "Thank you for your payment!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      
+      // Close the cart menu
+      onClose();
+    } catch (error) {
+      console.error("Error making payment:", error);
+    }
+  };
 
   return (
     <Box mb={"10"}>
@@ -58,13 +122,14 @@ const Category = () => {
           </Select>
           <MenuButton
             as={Button}
-            mr={'2'}
+            onClick={onOpen}
+            mr={"2"}
             rightIcon={<MdShoppingCartCheckout size={"35"} />}
             variant={"ghost"}
             textColor="white"
             _hover={{ bgColor: "white", color: "black" }}
-            onMouseEnter={onOpen}
-            onMouseLeave={onClose}
+            // onMouseLeave={onClose}
+            // onMouseEnter={onOpen}
           >
             <Flex
               borderRadius="full"
@@ -72,7 +137,7 @@ const Category = () => {
               align="center"
               bg="rgba(0,0,0, 0.8)"
               style={{
-                color: "white",
+                color: "cyan",
                 width: "20px",
                 height: "20px",
                 position: "absolute",
@@ -81,7 +146,7 @@ const Category = () => {
                 transform: "translate(15%, 0%)",
               }}
             >
-              { Cart.length }
+              {cartItems.length}
             </Flex>
           </MenuButton>
           <MenuList
@@ -99,7 +164,8 @@ const Category = () => {
                 Order Cart, <br /> Ready for payment{" "}
               </u>
             </Text>
-            <Cart /> {/* Import Cart component*/}
+            <Cart cartItems={cartItems} setCartItems={setCartItems} />
+            {/* Import Cart component*/}
             <Flex p={"5"} gap={"3"}>
               <Button
                 size={"sm"}
@@ -113,6 +179,7 @@ const Category = () => {
               </Button>
               <Spacer />
               <Button
+                onClick={handlePayment}
                 size={"sm"}
                 rightIcon={<FiDollarSign size={"20"} />}
                 variant={"outline"}
@@ -134,9 +201,9 @@ const Category = () => {
         pt={"2"}
         templateColumns="repeat(5, 1fr)"
       >
-        {category.map((item) => (
+        {categories.map((item) => (
           <Button
-            key={item.categoryName}
+            key={item.name}
             variant={"outline"}
             size={"sm"}
             textColor="white"
@@ -144,7 +211,7 @@ const Category = () => {
             _hover={{ bgColor: "white", color: "black" }}
             textTransform={"uppercase"}
           >
-            {item.categoryName}
+            {item.name}
           </Button>
         ))}
       </Grid>

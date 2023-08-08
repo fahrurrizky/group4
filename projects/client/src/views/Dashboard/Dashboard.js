@@ -1,10 +1,12 @@
 // Chakra imports
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
   Grid,
   Icon,
   SimpleGrid,
+  Spacer,
   Stat,
   StatLabel,
   StatNumber,
@@ -23,6 +25,8 @@ import Card from "../../components/Card/Card";
 import BarChart from "../../components/Charts/BarChart";
 import LineChart from "../../components/Charts/LineChart";
 import IconBox from "../../components/Icons/IconBox";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 // Custom icons
 import { FaUsers, FaStar } from "react-icons/fa";
 import {
@@ -30,7 +34,7 @@ import {
   DocumentIcon,
   WalletIcon,
 } from "../../components/Icons/Icons.js";
-import React from "react";
+
 // Variables
 import {
   barChartData,
@@ -45,16 +49,18 @@ function Rating({ maxStars = 5, ratingValue }) {
     <Box>
       {[...Array(maxStars)].map((_, index) => (
         <Icon
-          key={index}
-          as={FaStar}
-          color={index < ratingValue ? "yellow.400" : "gray.300"}
+        key={index}
+        as={FaStar}
+        color={index < ratingValue ? "yellow.400" : "gray.300"}
         />
-      ))}
+        ))}
     </Box>
   );
 }
 
 export default function Dashboard() {
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(null);
   // Chakra Color Mode
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
@@ -70,20 +76,9 @@ export default function Dashboard() {
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px" mb="20px">
         <Card minH="125px">
           <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
+            <Flex flexDirection="row" align="center" justify="center" w="100%" mb="25px">
               <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="white"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
+                <StatLabel fontSize="xs" color="white" fontWeight="bold" textTransform="uppercase">
                   Today's Money
                 </StatLabel>
                 <Flex>
@@ -92,13 +87,7 @@ export default function Dashboard() {
                   </StatNumber>
                 </Flex>
               </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
+              <IconBox borderRadius="50%" as="box" h={"45px"} w={"45px"} bg={iconBlue}>
                 <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -113,20 +102,9 @@ export default function Dashboard() {
 
         <Card minH="125px">
           <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
+            <Flex flexDirection="row" align="center" justify="center" w="100%" mb="25px">
               <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="white"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
+                <StatLabel fontSize="xs" color="white" fontWeight="bold" textTransform="uppercase">
                   Today's Customers
                 </StatLabel>
                 <Flex>
@@ -135,19 +113,8 @@ export default function Dashboard() {
                   </StatNumber>
                 </Flex>
               </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
-                <FaUsers
-                  size={"25px"}
-                  h={"24px"}
-                  w={"24px"}
-                  color={iconBoxInside}
-                />
+              <IconBox borderRadius="50%" as="box" h={"45px"} w={"45px"} bg={iconBlue}>
+                <FaUsers size={"25px"} h={"24px"} w={"24px"} color={iconBoxInside}/>
               </IconBox>
             </Flex>
             <Text color="white" fontSize="sm">
@@ -161,20 +128,9 @@ export default function Dashboard() {
 
         <Card minH="125px">
           <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
+            <Flex flexDirection="row" align="center" justify="center" w="100%" mb="25px">
               <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="white"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
+                <StatLabel fontSize="xs" color="white" fontWeight="bold" textTransform="uppercase">
                   Product Sold
                 </StatLabel>
                 <Flex>
@@ -183,13 +139,7 @@ export default function Dashboard() {
                   </StatNumber>
                 </Flex>
               </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
+              <IconBox borderRadius="50%" as="box" h={"45px"} w={"45px"} bg={iconBlue}>
                 <DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -204,20 +154,9 @@ export default function Dashboard() {
 
         <Card minH="125px">
           <Flex direction="column">
-            <Flex
-              flexDirection="row"
-              align="center"
-              justify="center"
-              w="100%"
-              mb="25px"
-            >
+            <Flex flexDirection="row" align="center" justify="center" w="100%" mb="25px">
               <Stat me="auto">
-                <StatLabel
-                  fontSize="xs"
-                  color="white"
-                  fontWeight="bold"
-                  textTransform="uppercase"
-                >
+                <StatLabel fontSize="xs" color="white" fontWeight="bold" textTransform="uppercase">
                   Total Sales
                 </StatLabel>
                 <Flex>
@@ -226,13 +165,7 @@ export default function Dashboard() {
                   </StatNumber>
                 </Flex>
               </Stat>
-              <IconBox
-                borderRadius="50%"
-                as="box"
-                h={"45px"}
-                w={"45px"}
-                bg={iconBlue}
-              >
+              <IconBox borderRadius="50%" as="box" h={"45px"} w={"45px"} bg={iconBlue}>
                 <CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -260,10 +193,7 @@ export default function Dashboard() {
             </Text>
           </Flex>
           <Box minH="300px">
-            <LineChart
-              chartData= {lineChartData}
-              chartOptions={lineChartOptions}
-              borderRadius={"3xl"}
+            <LineChart chartData= {lineChartData} chartOptions={lineChartOptions} borderRadius={"3xl"}
             />
           </Box>
         </Card>
@@ -286,8 +216,20 @@ export default function Dashboard() {
           <Flex direction="column">
             <Flex align="center" p="22px">
               <Text fontSize="lg" color={textColor} fontWeight="bold">
-                Product Best Seller
+                Sales Report
               </Text>
+              <Spacer/>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                placeholderText="Start Date"
+              />
+              <Spacer/>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                placeholderText="End Date"
+              />
             </Flex>
             <Box overflow={{ sm: "scroll", lg: "hidden" }} width={"100%"}>
               <Table>
@@ -299,18 +241,10 @@ export default function Dashboard() {
                     <Th color="black" borderColor={borderColor}>
                       Category
                     </Th>
-                    <Th
-                      color="black"
-                      borderColor={borderColor}
-                      textAlign={"center"}
-                    >
-                      Monthly Sales
+                    <Th color="black" borderColor={borderColor} textAlign={"center"}>
+                      Daily Total Sales
                     </Th>
-                    <Th
-                      color="black"
-                      borderColor={borderColor}
-                      textAlign={"center"}
-                    >
+                    <Th color="black" borderColor={borderColor} textAlign={"center"}>
                       Price
                     </Th>
                   </Tr>
@@ -319,39 +253,16 @@ export default function Dashboard() {
                   {productBestSaller.map((el, index, arr) => {
                     return (
                       <Tr key={index}>
-                        <Td
-                          color={textTableColor}
-                          fontSize="sm"
-                          fontWeight="bold"
-                          borderColor={borderColor}
-                          border={index === arr.length - 1 ? "none" : null}
-                        >
+                        <Td color={textTableColor} fontSize="sm" fontWeight="bold" borderColor={borderColor} border={index === arr.length - 1 ? "none" : null}>
                           {el.productName}
                         </Td>
-                        <Td
-                          color={textTableColor}
-                          fontSize="sm"
-                          border={index === arr.length - 1 ? "none" : null}
-                          borderColor={borderColor}
-                        >
+                        <Td color={textTableColor} fontSize="sm" border={index === arr.length - 1 ? "none" : null} borderColor={borderColor}>
                           {el.categoryProduct}
                         </Td>
-                        <Td
-                          color={textTableColor}
-                          textAlign={"center"}
-                          fontSize="sm"
-                          border={index === arr.length - 1 ? "none" : null}
-                          borderColor={borderColor}
-                        >
+                        <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === arr.length - 1 ? "none" : null} borderColor={borderColor}>
                           {el.monthlySales}
                         </Td>
-                        <Td
-                          color={textTableColor}
-                          textAlign={"center"}
-                          fontSize="sm"
-                          border={index === arr.length - 1 ? "none" : null}
-                          borderColor={borderColor}
-                        >
+                        <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === arr.length - 1 ? "none" : null} borderColor={borderColor}>
                           {el.price}
                         </Td>
                       </Tr>
@@ -392,30 +303,13 @@ export default function Dashboard() {
                 {bestPerformCashier.map((el, index, arr) => {
                   return (
                     <Tr key={index}>
-                      <Td
-                        color={textTableColor}
-                        fontSize="sm"
-                        fontWeight="bold"
-                        borderColor={borderColor}
-                        border={index === arr.length - 1 ? "none" : null}
-                      >
+                      <Td color={textTableColor} fontSize="sm" fontWeight="bold" borderColor={borderColor} border={index === arr.length - 1 ? "none" : null}>
                         {el.name}
                       </Td>
-                      <Td
-                        color={textTableColor}
-                        fontSize="sm"
-                        borderColor={borderColor}
-                        border={index === arr.length - 1 ? "none" : null}
-                      >
+                      <Td color={textTableColor} fontSize="sm" borderColor={borderColor} border={index === arr.length - 1 ? "none" : null}>
                         {el.highestSales}
                       </Td>
-                      <Td
-                        textAlign={"center"}
-                        color={textTableColor}
-                        fontSize="sm"
-                        borderColor={borderColor}
-                        border={index === arr.length - 1 ? "none" : null}
-                      >
+                      <Td textAlign={"center"} color={textTableColor} fontSize="sm" borderColor={borderColor} border={index === arr.length - 1 ? "none" : null}>
                         <Rating maxStars={5} ratingValue={parseInt(el.highestSales.replace(/\D/g, "")) / 100} />
                       </Td>
                     </Tr>

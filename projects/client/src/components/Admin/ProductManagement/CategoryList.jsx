@@ -29,7 +29,7 @@ console.log("categories", category);
       console.log(error);
     }
   }
-
+  
   useEffect(() => {
     fetchCategory();
   }, [])
@@ -45,6 +45,26 @@ console.log("categories", category);
     onClose: onEditCategoryClose,
   } = useDisclosure();
 
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/product/categories");
+      setCategories(response.data.result);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const handleCreateCategorySuccess = () => {
+    fetchCategories(); // Refresh the category list
+    onCreateCategoryClose(); // Close the create category modal
+  };
+  
   return (
     <Box mb={'10'}>
       <Box ml={'5'} mb={'3'} mt={"5"} style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -78,12 +98,17 @@ console.log("categories", category);
           </MenuList>
         </Menu>
       </Box>
+      <EditCategory isOpen={isEditCategoryOpen} onClose={onEditCategoryClose} />
       <CreateCategory
         isOpen={isCreateCategoryOpen}
         onClose={onCreateCategoryClose}
+        onCreateSuccess={handleCreateCategorySuccess}
       />
-      <EditCategory isOpen={isEditCategoryOpen} onClose={onEditCategoryClose} />
-
+      {/* <CreateCategory
+        isOpen={isCreateCategoryOpen}
+        onClose={onCreateCategoryClose}
+        onCreateSuccess={handleCreateCategorySuccess}
+      /> */}
       <Grid
         gap={"5"}
         fontFamily={"monospace"}
@@ -92,6 +117,7 @@ console.log("categories", category);
         templateColumns="repeat(5, 1fr)"
       >
         {categories.map((item) => (
+
         <Button key={item.id}
           variant={"outline"}
           size={"sm"}
@@ -104,6 +130,7 @@ console.log("categories", category);
         >
           {item.name}
         </Button>
+
         ))}
       </Grid>
     </Box>

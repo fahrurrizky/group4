@@ -1,26 +1,91 @@
-import { useState } from "react";
-import { ImEnter, ImExit } from "react-icons/im";
-import { RiDeleteBin5Fill } from "react-icons/ri";
+import React, { useState, useEffect } from "react";
 import {
   Flex,
-  ButtonGroup,
   IconButton,
-  Input,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  FormControl,
+  Input,
+  ButtonGroup,
+  useToast,
 } from "@chakra-ui/react";
+import { ImEnter, ImExit } from "react-icons/im";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import axios from "axios";
 
 function EditCategory({ isOpen, onClose }) {
-  const [value, setValue] = useState("Rasengan ⚡️");
+  const [categories, setCategories] = useState([]);
+  const [inputValues, setInputValues] = useState({});
+  const toast = useToast();
 
-  const handleSave = () => {
-    // Put your logic here to save the edited value
-    // For this example, we will just set the value directly
-    onClose(); // Close the modal after saving
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/product/categories"
+        );
+        setCategories(response.data.result);
+        setInputValues(
+          response.data.result.reduce((acc, category) => {
+            acc[category.id] = category.name;
+            return acc;
+          }, {})
+        );
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const handleEdit = async ({ id }) => {
+    const newName = inputValues[id];
+    try {
+      await axios.put(`http://localhost:8000/product/category/${id}`, {
+        name: newName,
+      });
+      toast({
+        title: "Category Edited",
+        description: `Category "${newName}" has been successfully edited.`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      onClose();
+    } catch (error) {
+      console.error("Error editing category:", error);
+    }
+  };
+
+  const onChange = (e, id) => {
+    setInputValues((prevInputValues) => ({
+      ...prevInputValues,
+      [id]: e.target.value,
+    }));
+  };
+
+  const handleDeleteCategory = async ({ id }) => {
+    try {
+      await axios.delete(`http://localhost:8000/product/category/${id}`);
+      const updatedCategories = categories.filter(
+        (category) => category.id !== id
+      );
+      setCategories(updatedCategories);
+      toast({
+        title: "Category delete",
+        description: "Successfully delete category.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      onClose();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
   };
 
   return (
@@ -36,44 +101,50 @@ function EditCategory({ isOpen, onClose }) {
           <ModalHeader>Edit Category</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <Flex mb={'5'}>
-              <Input
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                fontSize="xl"
-                minW={'250'}
-                size={'sm'}
-                mr={'5'}
-              />
-              <ButtonGroup>
-              <IconButton
-                icon={<ImEnter />}
-                onClick={handleSave}
-                variant={"outline"}
-                size={"sm"}
-                textColor="white"
-                w="100%"
-                _hover={{ bgColor: "green", color: "white" }}
-              />
-              <IconButton
-                icon={<ImExit />}
-                onClick={onClose}
-                variant={"outline"}
-                size={"sm"}
-                textColor="white"
-                w="100%"
-                _hover={{ bgColor: "blue", color: "white" }}
-              />
-              <IconButton
-                icon={<RiDeleteBin5Fill />}
-                onClick={onClose}
-                variant={"outline"}
-                size={"sm"}
-                textColor="white"
-                w="100%"
-                _hover={{ bgColor: "red", color: "white" }}
-              />
-              </ButtonGroup>
+            <Flex mb={"5"}>
+              <FormControl>
+                {categories.map((item) => (
+                  <Flex mb={"2"} key={item.id}>
+                    <Input
+                      size={"sm"}
+                      value={inputValues[item.id] || ""}
+                      onChange={(e) => onChange(e, item.id)}
+                      name="name"
+                      id={`name-${item.id}`}
+                    />
+                    <ButtonGroup>
+                      <IconButton
+                        ml={"3"}
+                        icon={<ImEnter />}
+                        onClick={() => handleEdit(item)}
+                        variant={"outline"}
+                        size={"sm"}
+                        textColor="white"
+                        w="100%"
+                        _hover={{ bgColor: "green", color: "white" }}
+                      />
+                      <IconButton
+                        icon={<ImExit />}
+                        onClick={onClose}
+                        variant={"outline"}
+                        size={"sm"}
+                        textColor="white"
+                        w="100%"
+                        _hover={{ bgColor: "blue", color: "white" }}
+                      />
+                      <IconButton
+                        icon={<RiDeleteBin5Fill />}
+                        onClick={() => handleDeleteCategory(item)}
+                        variant={"outline"}
+                        size={"sm"}
+                        textColor="white"
+                        w="100%"
+                        _hover={{ bgColor: "red", color: "white" }}
+                      />
+                    </ButtonGroup>
+                  </Flex>
+                ))}
+              </FormControl>
             </Flex>
           </ModalBody>
         </ModalContent>
@@ -81,4 +152,5 @@ function EditCategory({ isOpen, onClose }) {
     </>
   );
 }
+
 export default EditCategory;

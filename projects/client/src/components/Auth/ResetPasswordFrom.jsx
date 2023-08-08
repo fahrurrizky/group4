@@ -35,7 +35,7 @@ const ResetPasswordForm = () => {
   const handleSubmit = (values, { setSubmitting }) => {
     axios
       .patch(
-        "http://localhost:8000/auth/reset-password",
+        "http://localhost:8000/auth/password",
         {
           password: values.password,
           confirmPassword: values.confirmPassword,
