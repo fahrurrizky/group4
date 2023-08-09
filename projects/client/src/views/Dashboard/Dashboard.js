@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
+  Button,
   Flex,
   Grid,
   Icon,
+  Input,
   SimpleGrid,
   Spacer,
   Stat,
@@ -20,6 +22,8 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
+import axios from "axios"; // If you choose to use axios
+
 // // Custom components
 import Card from "../../components/Card/Card";
 import BarChart from "../../components/Charts/BarChart";
@@ -59,8 +63,9 @@ function Rating({ maxStars = 5, ratingValue }) {
 }
 
 export default function Dashboard() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [salesReportData, setSalesReportData] = useState([]);
   // Chakra Color Mode
   const iconBlue = useColorModeValue("blue.500", "blue.500");
   const iconBoxInside = useColorModeValue("white", "white");
@@ -69,6 +74,26 @@ export default function Dashboard() {
   const borderColor = useColorModeValue("white", "white");
   const textTableColor = useColorModeValue("white", "white");
 
+  const fetchSalesReportData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/report/sold?startDate=2023-08-01&endDate=2023-08-09"
+      );
+      const data = response.data.productSold;
+      setSalesReportData(data);
+    } catch (error) {
+      console.error("Error fetching sales report:", error);
+    }
+  };
+  useEffect(() => {
+    fetchSalesReportData();
+  }, []);
+    
+  const handleSalesReportClick = async () => {
+    const reportData = await fetchSalesReportData();
+    // Update the salesReportData state with the fetched data
+    setSalesReportData(reportData);
+  };
   const { colorMode } = useColorMode();
 
   return (
@@ -212,33 +237,43 @@ export default function Dashboard() {
           </Box>
         </Card>
 
-        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
-          <Flex direction="column">
-            <Flex align="center" p="22px">
-              <Text fontSize="lg" color={textColor} fontWeight="bold">
+        <Card p="0px" maxW={{ sm: "290px", md: "100%" }}>
+          <Flex direction="column" maxW={'768px'}>
+            <Flex align="center" my={'21'}>
+              <Button variant={'outline'} bgColor={'whiteAlpha.500'} borderColor={'white'} textColor="white" _hover={{ bgColor: "white", color: "black" }} w={'400px'} fontSize="lg" color={textColor} fontWeight="bold"
+              onClick={handleSalesReportClick}
+              >
                 Sales Report
-              </Text>
-              <Spacer/>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                placeholderText="Start Date"
+              </Button>
+              <Input
+                type="date"
+                _hover={{ bgColor: "white", color: "black" }} 
+                mx={'2'}
+                maxWidth={'200'}
+                color={'white'}
+                bgColor={'whiteAlpha.500'}
+                value={startDate} // Bind value to startDate
+                onChange={(e) => setStartDate(e.target.value)}
+                dateFormat={'yyyy-mm-dd'}
               />
-              <Spacer/>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                placeholderText="End Date"
+              <Input
+                type="date"
+                _hover={{ bgColor: "white", color: "black" }}
+                maxWidth={'200'}
+                bgColor={'whiteAlpha.500'}
+                value={endDate} // Bind value to endDate
+                onChange={(e) => setEndDate(e.target.value)}
+                dateFormat={'yyyy-mm-dd'}
               />
             </Flex>
-            <Box overflow={{ sm: "scroll", lg: "hidden" }} width={"100%"}>
+            <Box width={"100%"} maxHeight={'300px'} overflowX={'scroll'}>
               <Table>
                 <Thead>
                   <Tr bg={tableRowColor}>
                     <Th color="black" borderColor={borderColor}>
                       Product Name
                     </Th>
-                    <Th color="black" borderColor={borderColor}>
+                    <Th color="black" borderColor={borderColor} textAlign={"center"}>
                       Category
                     </Th>
                     <Th color="black" borderColor={borderColor} textAlign={"center"}>
@@ -250,24 +285,22 @@ export default function Dashboard() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {productBestSaller.map((el, index, arr) => {
-                    return (
-                      <Tr key={index}>
-                        <Td color={textTableColor} fontSize="sm" fontWeight="bold" borderColor={borderColor} border={index === arr.length - 1 ? "none" : null}>
-                          {el.productName}
-                        </Td>
-                        <Td color={textTableColor} fontSize="sm" border={index === arr.length - 1 ? "none" : null} borderColor={borderColor}>
-                          {el.categoryProduct}
-                        </Td>
-                        <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === arr.length - 1 ? "none" : null} borderColor={borderColor}>
-                          {el.monthlySales}
-                        </Td>
-                        <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === arr.length - 1 ? "none" : null} borderColor={borderColor}>
-                          {el.price}
-                        </Td>
-                      </Tr>
-                    );
-                  })}
+                  {salesReportData.map((report, index) => (
+                    <Tr key={index}>
+                      <Td color={textTableColor} fontSize="sm" fontWeight="bold" borderColor={borderColor} border={index === salesReportData.length - 1 ? "none" : null}>
+                        {report.Product.name}
+                      </Td>
+                      <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === salesReportData.length - 1 ? "none" : null} borderColor={borderColor}>
+                        {report.Product.categoryId}
+                      </Td>
+                      <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === salesReportData.length - 1 ? "none" : null} borderColor={borderColor}>
+                        {report.totalQuantity}
+                      </Td>
+                      <Td color={textTableColor} textAlign={"center"} fontSize="sm" border={index === salesReportData.length - 1 ? "none" : null} borderColor={borderColor}>
+                        {report.Transaction.totalPrice}
+                      </Td>
+                    </Tr>
+                  ))}
                 </Tbody>
               </Table>
             </Box>
@@ -276,7 +309,7 @@ export default function Dashboard() {
 
         <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
           <Flex direction="column">
-            <Flex align="center" p="22px">
+            <Flex align="center" my={'27'}>
               <Text fontSize="lg" color={textColor} fontWeight="bold">
                 Best Perform Cashier
               </Text>

@@ -45,23 +45,11 @@ console.log("categories", category);
     onClose: onEditCategoryClose,
   } = useDisclosure();
 
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/product/categories");
-      setCategories(response.data.result);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
 
   const handleCreateCategorySuccess = () => {
-    fetchCategories(); // Refresh the category list
+    fetchCategory(); // Refresh the category list
     onCreateCategoryClose(); // Close the create category modal
   };
   

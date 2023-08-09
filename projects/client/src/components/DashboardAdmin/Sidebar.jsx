@@ -4,6 +4,7 @@ import { Flex, Box, Button, VStack } from "@chakra-ui/react";
 import LOGO from "../../assets/MajesticMixer.png";
 import { FaSignOutAlt, FaUsersCog, FaHome, FaCreativeCommonsBy, FaShoppingCart, FaSkullCrossbones } from "react-icons/fa";
 import Dashboard from "../../views/Dashboard/Dashboard";
+import Report from "../../views/Dashboard/ReportAdmin";
 import Profil from "../../views/Dashboard/Profile";
 // import Tables from "../../views/Dashboard/Tables";
 import Calender from "../DashboardAdmin/Calender";
@@ -19,8 +20,10 @@ const Sidebar = () => {
   const [activePage, setActivePage] = useState("dashboard");
   const renderPage = () => {
     switch (activePage) {
-      case "dashboard":
-        return <Dashboard />;
+      case "report":
+        return <Report />;
+      // case "dashboard":
+      //     return <Dashboard />;
       case "profile":
         return <Profil />;
       case "product":
@@ -53,7 +56,7 @@ const Sidebar = () => {
 
         <Box w="100%" h="100%" justifyContent="center">
         <center><img src={LOGO} alt="Logo" width={'200px'}/></center>
-        <Button fontSize={'small'} onClick={() => setActivePage("dashboard")} mt={'10'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaHome/>&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</Button>
+        <Button fontSize={'small'} onClick={() => setActivePage("report")} mt={'10'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaHome/>&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</Button>
         <Button fontSize={'small'} onClick={() => setActivePage("cashier")} mt={'5'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaCreativeCommonsBy/>&nbsp;&nbsp;&nbsp;&nbsp;Cashier Management</Button>
         <Button fontSize={'small'} onClick={() => setActivePage("product")} mt={'5'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaShoppingCart/>&nbsp;&nbsp;&nbsp;&nbsp;Product Management</Button>
         <Button fontSize={'small'} onClick={() => setActivePage("profile")}mt={'5'} justifyContent="left" variant={'outline'} textColor="white" w="100%" _hover={{bgColor:"white", color:"black"}}><FaSkullCrossbones/>&nbsp;&nbsp;&nbsp;&nbsp;Profile</Button>

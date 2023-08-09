@@ -48,8 +48,9 @@ const Product = ({searchResult}) => {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/product/all?page=${currentPage}&&name=${searchQuery}&&orderBy=${price}&&categoryId=${category}&&orderByName=${name}`);
+      const response = await axios.get(`http://localhost:8000/product/all?page=${currentPage}&&name=${searchQuery}&&orderBy=${price}&&categoryId=${category}&&orderByName=${name}`); 
       setSelectedProduct(response.data.productList);
+      
     } catch (err) {
       console.log(err);
     }
@@ -107,7 +108,7 @@ const handlefilterCategory = (value) => {
 
   return (
     <Box>
-            <Box width={'100%'}>
+            <Box width={'98%'} m={'4'}>
               <InputGroup borderRadius={"full"} size="sm">
                 <InputLeftElement
                   pointerEvents="none"
@@ -158,7 +159,7 @@ const handlefilterCategory = (value) => {
                 pos: 'absolute',
                 top: 2,
                 left: 0,
-                backgroundImage: `url(${obj.productImg})`,
+                backgroundImage: `url(http://localhost:8000/api/${obj.productImg})`,
                 filter: 'blur(10px)',
                 zIndex: -1,
               }}
@@ -184,7 +185,7 @@ const handlefilterCategory = (value) => {
                 textTransform="uppercase"
                 fontFamily="monospace"
               >
-                {obj.categoryId}
+                {obj.Category?.name}
               </Text>
               <Heading
                 color="black"
