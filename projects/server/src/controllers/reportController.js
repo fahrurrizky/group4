@@ -55,6 +55,22 @@ const createReport = {
       return res.status(400).json({ message: error.message });
     }
   },
+
+  getDailySalesAggregate: async (req, res) => {
+    try {
+      const dailySales = await Transaction.findAll({
+        attributes: [
+          [db.Sequelize.fn('date', db.Sequelize.col('createdAt')), 'transactionDate'],
+          [db.Sequelize.fn('sum', db.Sequelize.col('totalPrice')), 'totalSales'],
+        ],
+        group: [db.Sequelize.fn('date', db.Sequelize.col('createdAt'))],
+      });
+  
+      return res.status(200).json({ data: dailySales });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = createReport;

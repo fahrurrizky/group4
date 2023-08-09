@@ -40,7 +40,7 @@ const productController = {
         where: whereClause,
         include: {
           model: Category,
-          as: 'Category',
+          // as: 'Category',
         },
         order,
         limit,

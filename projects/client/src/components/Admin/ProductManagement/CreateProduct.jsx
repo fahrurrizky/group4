@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -13,10 +13,12 @@ import {
   Input,
   Textarea,
   useToast,
+  Select,
 } from '@chakra-ui/react';
 import axios from 'axios';
 
 export default function CreateProduct({ isOpen, onClose }) {
+  const [categories, setCategories] = useState([]);
   const toast = useToast()
   const [formData, setFormData] = useState({
     name: '',
@@ -27,6 +29,19 @@ export default function CreateProduct({ isOpen, onClose }) {
     description: '',
   });
 
+  const fetchCategory = async () => {
+    try {
+      const {data} = await axios.get(`http://localhost:8000/product/categories`);
+      console.log("dafas", data);
+      setCategories(data.result);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  useEffect(() => {
+    fetchCategory();
+  }, [])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -102,23 +117,21 @@ export default function CreateProduct({ isOpen, onClose }) {
             </FormControl>
             <FormControl>
               <FormLabel><i>Category ID</i></FormLabel>
-              <Input
+              {/* <Input
               type="text"
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
-            />
+            /> */}
 
-              {/* <Select
+              <Select
                 name="categoryId"
                 onChange={handleInputChange}
               >
-                <option value="1">Beer</option>
-                <option value="2">Wine</option>
-                <option value="3">Vodka</option>
-                <option value="4">Whiskey</option>
-                <option value="5">Rum</option>
-              </Select> */}
+                {categories.map((item) => (
+                <option  key={item.id} value={item.id}>{item.name}</option>
+                ))}
+              </Select>
             </FormControl>
             <FormControl>
               <FormLabel><i>Description Product</i></FormLabel>

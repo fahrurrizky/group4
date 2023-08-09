@@ -13,6 +13,7 @@ import {
   InputGroup,
   InputRightElement,
   Icon,
+  useToast
 } from '@chakra-ui/react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { useState } from 'react';
@@ -23,6 +24,7 @@ const CreateCashier = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const toast = useToast()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,9 +53,22 @@ const CreateCashier = ({ isOpen, onClose }) => {
       setEmail('');
       setPassword('');
       onClose();
-
+      toast({
+        title: "Cashier Created",
+        description: "The cashier account has been successfully created.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Error",
+        description: "An error occurred while creating the cashier account.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } };
 
   const handleTogglePasswordVisibility = () => {

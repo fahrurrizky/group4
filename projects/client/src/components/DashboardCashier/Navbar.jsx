@@ -51,7 +51,7 @@ export default function Navbar() {
                 <Box fontWeight={"bold"} fontSize={"md"}>
                   Andre Widyatmoko
                 </Box>{" "}
-                Your Admin
+                Your Cashier
               </Text>
               <MenuList zIndex={900000} bgColor={"rgba(0,0,0, 0.5)"}>
                 <MenuItem bgColor={"rgba(0,0,0, 0.5)"}>Link 1</MenuItem>

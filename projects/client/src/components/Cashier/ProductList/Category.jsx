@@ -20,7 +20,7 @@ import { AiOutlineClear } from "react-icons/ai";
 
 import Cart from "../Transaction/Cart";
 
-const Category = () => {
+const Category = ({price, setPrice, handleSortPrice, category, handleFilterCategory, setCategory, handleSortName, setName, name}) => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [categories, setCategories] = useState([]);
@@ -111,14 +111,14 @@ const Category = () => {
         style={{ display: "flex", justifyContent: "flex-end" }}
       >
         <Menu isOpen={isOpen}>
-          <Select placeholder="Sort by product" w={"md"}>
-            <option value="option1">A-Z</option>
-            <option value="option2">Z-A</option>
+          <Select value={name} onChange={handleSortName} placeholder="Sort by product" w={"md"}>
+            <option value="name_asc">A-Z</option>
+            <option value="name_desc">Z-A</option>
           </Select>
           <Spacer />
-          <Select placeholder="Sort by price" w={"md"}>
-            <option value="option1">Ascending</option>
-            <option value="option2">Descending</option>
+          <Select value={price} onChange={handleSortPrice} placeholder="Sort by price" w={"md"}>
+            <option value="harga_produk_asc" >Ascending</option>
+            <option value="harga_produk_desc" >Descending</option>
           </Select>
           <MenuButton
             as={Button}
@@ -210,6 +210,8 @@ const Category = () => {
             w="100%"
             _hover={{ bgColor: "white", color: "black" }}
             textTransform={"uppercase"}
+            value={category}
+            onClick={() => setCategory(item.id)}
           >
             {item.name}
           </Button>

@@ -26,7 +26,6 @@ export default function Product() {
   const [quantities, setQuantities] = useState([]); // Initialize quantities state
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedProduct, setSelectedProduct] = useState([]);
   const [searchQuery, setSearchQuery] = useState([]);
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
@@ -40,11 +39,11 @@ export default function Product() {
 
   useEffect(() => {
     fetchProduct();
-  }, []);
+  }, [currentPage, price, category, name]);
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/product/all");
+      const response = await axios.get(`http://localhost:8000/product/all?page=${currentPage}&&name=${searchQuery}&&orderBy=${price}&&categoryId=${category}&&orderByName=${name}`);
       setProduct(response.data.productList);
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -100,7 +99,7 @@ const handlefilterCategory = (value) => {
 
   return (
     <Box>
-      <Box width={'100%'}>
+      <Box width={'98%'} m={'4'}>
               <InputGroup borderRadius={"full"} size="sm">
                 <InputLeftElement
                   pointerEvents="none"
@@ -177,7 +176,7 @@ const handlefilterCategory = (value) => {
                 textTransform="uppercase"
                 fontFamily="monospace"
               >
-                {obj.categoryId}
+                {obj.Category?.name}
               </Text>
               <Heading
                 color="black"
@@ -245,7 +244,7 @@ const handlefilterCategory = (value) => {
           </Box>
         ))}
       </Flex>
-      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} selectedProduct={selectedProduct}/>
+      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} selectedProduct={setProduct}/>
     </Box>
   );
 }
