@@ -49,7 +49,7 @@ const Login = () => {
       <Box bg={"rgba(0,0,0, 0.7)"} w={"full"} h={"full"} pt={5}>
         <Quote/>
         <center>
-          <a href="/login">
+          <a href="/">
             <img src={LOGO} alt="Logo" width="300px" />
           </a>
         </center>

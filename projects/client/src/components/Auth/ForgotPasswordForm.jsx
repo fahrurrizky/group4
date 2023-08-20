@@ -39,7 +39,7 @@ const ForgotPassword = () => {
         FE_URL: "http://localhost:3000"
       })
       .then(function (response) {
-        navigate("/login");
+        navigate("/");
         toast({
           title: "Password reset password sent successfully",
           status: "success",

@@ -17,9 +17,10 @@ import { ImEnter, ImExit } from "react-icons/im";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import axios from "axios";
 
-function EditCategory({ isOpen, onClose }) {
+function EditCategory({ isOpen, onClose, onEditSuccess, onCreateSuccess }) {
   const [categories, setCategories] = useState([]);
   const [inputValues, setInputValues] = useState({});
+  // const [isDeleting, setIsDeleting] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -34,7 +35,8 @@ function EditCategory({ isOpen, onClose }) {
             acc[category.id] = category.name;
             return acc;
           }, {})
-        );
+          );
+        onCreateSuccess();
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -56,6 +58,7 @@ function EditCategory({ isOpen, onClose }) {
         isClosable: true,
       });
       onClose();
+      onEditSuccess();
     } catch (error) {
       console.error("Error editing category:", error);
     }
@@ -83,6 +86,7 @@ function EditCategory({ isOpen, onClose }) {
         isClosable: true,
       });
       onClose();
+      onEditSuccess();
     } catch (error) {
       console.error("Error deleting category:", error);
     }

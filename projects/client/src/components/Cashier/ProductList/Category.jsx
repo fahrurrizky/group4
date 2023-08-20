@@ -26,10 +26,18 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
   const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
 
+  const handleToggleCategory = (categoryId) => {
+    if (category === categoryId) {
+      setCategory(null); // Clear the category if it's already selected
+    } else {
+      setCategory(categoryId); // Set the selected category
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
     fetchCartItems();
-  }, []);
+  },[]);
 
   const fetchCategories = async () => {
     try {
@@ -41,6 +49,7 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
       console.error("Error fetching categories:", error);
     }
   };
+
 
   const fetchCartItems = async () => {
     const token = localStorage.getItem("token");
@@ -62,6 +71,8 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
         config
       );
       setCartItems(response.data.cartItems);
+      fetchCartItems();
+
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
@@ -85,7 +96,7 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
         }
       );
       setCartItems([]);
-      fetchCartItems();
+      // fetchCartItems();
       // Show success toast
       toast({
         title: "Payment Successful",
@@ -104,12 +115,7 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
 
   return (
     <Box mb={"10"}>
-      <Box
-        ml={"5"}
-        mb={"3"}
-        mt={"5"}
-        style={{ display: "flex", justifyContent: "flex-end" }}
-      >
+      <Box ml={"5"} mb={"3"} mt={"5"} style={{ display: "flex", justifyContent: "flex-end" }}>
         <Menu isOpen={isOpen}>
           <Select value={name} onChange={handleSortName} placeholder="Sort by product" w={"md"}>
             <option value="name_asc">A-Z</option>
@@ -164,8 +170,7 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
                 Order Cart, <br /> Ready for payment{" "}
               </u>
             </Text>
-            <Cart cartItems={cartItems} setCartItems={setCartItems} />
-            {/* Import Cart component*/}
+            <Cart cartItems={cartItems} setCartItems={setCartItems} />{/* Import Cart component*/}
             <Flex p={"5"} gap={"3"}>
               <Button
                 size={"sm"}
@@ -203,18 +208,20 @@ const Category = ({price, setPrice, handleSortPrice, category, handleFilterCateg
       >
         {categories.map((item) => (
           <Button
-            key={item.name}
-            variant={"outline"}
-            size={"sm"}
-            textColor="white"
-            w="100%"
-            _hover={{ bgColor: "white", color: "black" }}
-            textTransform={"uppercase"}
-            value={category}
-            onClick={() => setCategory(item.id)}
-          >
-            {item.name}
-          </Button>
+          key={item.name}
+          variant={"outline"}
+          size={"sm"}
+          textColor={category === item.id ? "black" : "white"} // Change text color based on selection
+          bgColor={category === item.id ? "white" : "transparent"} // Change background color based on selection
+          w="100%"
+          _hover={{ bgColor: "white", color: "black" }}
+          _active={{ bgColor: "lightblue", color: "black" }} // Apply light-up effect when button is clicked
+          textTransform={"uppercase"}
+          value={category}
+          onClick={() => handleToggleCategory(item.id)} // Toggle the category selection
+        >
+          {item.name}
+        </Button>
         ))}
       </Grid>
     </Box>

@@ -16,11 +16,12 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [moneyReceived, setMoneyReceived] = useState("");
   const [productNames, setProductNames] = useState({});
+  
 
   useEffect(() => {
     fetchCartItems();
     fetchProductNames();
-  }, []);
+  },[]);
 
   const fetchCartItems = async () => {
     const token = localStorage.getItem("token"); // Replace with your actual token key
@@ -42,6 +43,8 @@ const Cart = () => {
         config
       );
       setCartItems(response.data.cartItems);
+      fetchCartItems();
+      
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
@@ -101,7 +104,7 @@ const Cart = () => {
       console.error("Error removing item:", error);
     }
   };
-
+ 
   return (
     <Box direction="column" justifyContent="center" mt={"8"}>
       <Box>

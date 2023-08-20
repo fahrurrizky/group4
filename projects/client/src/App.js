@@ -16,7 +16,7 @@ export default function App() {
   return (
     <ChakraProvider>
       <Routes>
-        <Route path="/login" element={<Login/>} />
+        <Route path="/" element={<Login/>} />
         <Route path="/forgotpassword" element={<ForgotPassword/>} />
         <Route path="/reset-password/:token" element={<ResetPasswordForm/>} />
         <Route path="/dashboard-admin" element={<DashboardAdmin/>} />

@@ -22,8 +22,9 @@ const DashboardCashier = () => {
     // bgRepeat="no-repeat"
     h="100%"
     overflow="scroll"
+    minH={'100vh'}
     >
-    <Flex color="white" flex={"2"} bgColor={"rgba(0,0,0, 0.6)"} w={"full"} h={"full"}>
+    <Flex color="white" flex={"2"} bgColor={"rgba(0,0,0, 0.6)"} w={"full"} h={"full"} minH={'100vh'}>
       <Box m={'3'} overflow="scroll">
         <Sidebar /> {/* Import Siderbar component*/}
       </Box>

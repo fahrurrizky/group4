@@ -1,5 +1,6 @@
 "use client";
-
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -22,6 +23,29 @@ import { Search2Icon } from "@chakra-ui/icons";
 import CurrentDate from "../DashboardAdmin/DateClock";
 
 export default function Navbar() {
+  const [cashiers, setCashiers] = useState([]);
+
+  const fetchCashiers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const response = await axios.get('http://localhost:8000/auth/cashier/profile', config);
+      setCashiers(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+  fetchCashiers();
+  }, []);
+
   return (
     <>
       <Box
@@ -29,6 +53,7 @@ export default function Navbar() {
         px={4}
         w='100%'
         borderRadius={"3xl"}
+        minW={'1137px'}
       >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Flex alignItems={"center"}>
@@ -42,16 +67,16 @@ export default function Navbar() {
               >
                 <Avatar
                   size={"md"}
-                  src={
-                    "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb"
-                  }
+                  src={`http://localhost:8000/api/${cashiers.imgProfile}`}
                 />
               </MenuButton>
               <Text fontSize={"sm"} ml={"3"}>
-                <Box fontWeight={"bold"} fontSize={"md"}>
-                  Andre Widyatmoko
+                <Box fontWeight={"bold"} fontSize={"lg"} fontFamily="cursive">
+                {cashiers.username}
                 </Box>{" "}
-                Your Cashier
+                <i>
+                 {cashiers.role}, The Majestic Mixer
+                </i>
               </Text>
               <MenuList zIndex={900000} bgColor={"rgba(0,0,0, 0.5)"}>
                 <MenuItem bgColor={"rgba(0,0,0, 0.5)"}>Link 1</MenuItem>

@@ -42,6 +42,7 @@ const CashierList = () => {
     try {
       const response = await axios.get('http://localhost:8000/auth/cashier');
       setCashiers(response.data);
+      onCreateCashierClose()
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -72,11 +73,19 @@ const CashierList = () => {
     }
   };
 
-
-
   useEffect(() => {
     fetchCashiers();
   }, []);
+
+  const handleEditCashierSuccess = () => {
+    fetchCashiers(); 
+    onEditCashierClose(); 
+  };
+
+  const handleCreateCashierSuccess = () => {
+    onCreateCashierClose(); 
+    fetchCashiers();
+  };
 
   return (
     <Box maxW="10xl" px={{ base: 5, md: 20 }}>
@@ -136,12 +145,12 @@ const CashierList = () => {
         <Button position={'fixed'} zIndex={1} bottom={5} right={5} p={6} justifyContent={'center'} alignItems={'center'} rounded={'full'} bgColor={'rgba(255,255,255, 0.7)'}>
           <BiAddToQueue size={'30px'} onClick={onCreateCashierOpen} />
         </Button>
-        <CreateCashier isOpen={isCreateCashierOpen} onClose={onCreateCashierClose} />
+        <CreateCashier isOpen={isCreateCashierOpen} onClose={onCreateCashierClose} onCreateSuccess={handleCreateCashierSuccess} onUpdate={fetchCashiers} />
       </Link>
 
       {/* Render the EditCashier modal here */}
       {selectedCashier && (
-        <EditCashier isOpen={isEditCashierOpen} onClose={onEditCashierClose} cashier={selectedCashier} onUpdate={handleUpdateCashiers} />
+        <EditCashier isOpen={isEditCashierOpen} onClose={onEditCashierClose} cashier={selectedCashier} onUpdate={handleUpdateCashiers} onEditSuccess={handleEditCashierSuccess} />
       )}
     </Box>
   );

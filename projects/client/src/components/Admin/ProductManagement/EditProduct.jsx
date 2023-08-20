@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -18,7 +18,10 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 
-const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated }) => {
+const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated, onEditSuccess }) => {
+  const [categories, setCategories] = useState([]);
+  const [imagePreview, setImagePreview] = useState(selectedProduct?.productImg || null);
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: selectedProduct?.name || "",
     categoryId: selectedProduct?.categoryId || "",
@@ -28,9 +31,21 @@ const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated }) => 
     productImg: null,
   });
 
+  const fetchCategory = async () => {
+    try {
+      const {data} = await axios.get(`http://localhost:8000/product/categories`);
+      console.log("dafas", data);
+      setCategories(data.result);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  useEffect(() => {
+    fetchCategory();
+  }, [])
 
-  const toast = useToast();
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -39,6 +54,15 @@ const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated }) => 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setFormData({ ...formData, productImg: file });
+
+    // Step 3: Update the image preview state
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleUpdateProduct = async (event) => {
@@ -89,10 +113,11 @@ const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated }) => 
         });
         console.log("Failed to update product");
       }
+      onEditSuccess();
     } catch (error) {
       toast({
         title: "Product Failed to Update",
-        description: "The product could not be updated.",
+        description: "The product could not be updated, please complete the input form,",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -120,7 +145,7 @@ const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated }) => 
                 rounded={"xl"}
                 boxSize='120px'
                 objectFit={'cover'}
-                src={formData.productImg || Image}
+                src={imagePreview || Image}
                 alt="#"
               />
               <Input my={'2'} color={"rgba(0,0,0,0)"} variant={'unstyled'} size={'xs'} type="file" width={'50%'} onChange={handleImageChange} />
@@ -134,13 +159,26 @@ const EditProduct = ({ isOpen, onClose, selectedProduct, onProductUpdated }) => 
               <Input name="harga_produk" placeholder='Add Product Price' value={formData.harga_produk} onChange={handleInputChange} />
             </FormControl>
             <FormControl>
-              <FormLabel><i>Category ID</i></FormLabel>
-              <Input
+              <FormLabel><i>Category</i></FormLabel>
+              {/* <Input
               type="text"
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
-            />
+            /> */}
+            <Select
+                name="categoryId"
+                onChange={(e) => {
+                  const categoryId = e.target.value; // Extract the selected category ID
+                  handleInputChange({ target: { name: 'categoryId', value: categoryId } }); // Update categoryId in formData
+                }}
+              >
+                {categories.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
             </FormControl>
             <FormControl>
               <FormLabel><i>Description Product</i></FormLabel>

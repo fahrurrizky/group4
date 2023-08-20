@@ -27,11 +27,11 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
-    <Flex borderRadius={"3xl"} h="100%" maxHeight="767px" minHeight="767px">
+    <Flex borderRadius={"3xl"} h="100%" maxHeight="767px" >
       <VStack 
         bgColor={"rgba(0,0,0, 0.5)"}
         borderRadius={"3xl"}

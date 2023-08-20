@@ -45,20 +45,42 @@ const Product = ({searchResult}) => {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
+  const [product, setProduct] = useState([]);
+  const [hoveredStates, setHoveredStates] = useState(new Array(product.length).fill(false));
+
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/product/all?page=${currentPage}&&name=${searchQuery}&&orderBy=${price}&&categoryId=${category}&&orderByName=${name}`); 
+      let apiUrl = `http://localhost:8000/product/all?page=${currentPage}`;
+  
+      if (searchQuery) {
+        apiUrl += `&name=${searchQuery}`;
+      }
+  
+      if (price) {
+        apiUrl += `&orderBy=${price}`;
+      }
+  
+      if (category) {
+        apiUrl += `&categoryId=${category}`;
+      }
+  
+      if (name) {
+        apiUrl += `&orderByName=${name}`;
+      }
+  
+      const response = await axios.get(apiUrl);
       setSelectedProduct(response.data.productList);
-      
     } catch (err) {
       console.log(err);
     }
   };
+  
 
   useEffect(() => {
     fetchProduct();
-  }, [currentPage, price, category, name]);
+  }, [currentPage, price, category, name, searchQuery]);
+  
 
   const handleEditClick = (product) => {
     setEditingProduct(product);
@@ -106,6 +128,27 @@ const handlefilterCategory = (value) => {
     }
   }
 
+  const handleCreateProductSuccess = () => {
+    fetchProduct(); // Refresh the category list
+    onCreateProductClose(); // Close the create category modal
+  };
+  const handleEditProductSuccess = () => {
+    fetchProduct(); 
+    onEditProductClose(); 
+  };
+
+  const handleHover = (index) => {
+    const newHoveredStates = [...hoveredStates];
+    newHoveredStates[index] = true;
+    setHoveredStates(newHoveredStates);
+  };
+  
+  const handleMouseLeave = (index) => {
+    const newHoveredStates = [...hoveredStates];
+    newHoveredStates[index] = false;
+    setHoveredStates(newHoveredStates);
+  };
+
   return (
     <Box>
             <Box width={'98%'} m={'4'}>
@@ -116,7 +159,7 @@ const handlefilterCategory = (value) => {
                 />
                 <Input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search product..."
                   border="1px solid white"
                   rounded={"full"}
                   value={searchQuery}
@@ -176,9 +219,13 @@ const handlefilterCategory = (value) => {
                 objectFit="contain"
                 src={`http://localhost:8000/api/${obj.productImg}`}
                 alt="#"
+                onMouseEnter={() => handleHover(index)} // Pass the index to handleHover
+                onMouseLeave={() => handleMouseLeave(index)} // Pass the index to handleMouseLeave
+                zIndex={hoveredStates[index] ? 1 : -1}
+                transform={hoveredStates[index] ? 'scale(1.5)' : 'scale(1)'}
               />
             </Box>
-            <Stack pt={2} align="center">
+            <Stack pt={4} align="center">
               <Text
                 color="black"
                 fontSize="sm"
@@ -231,18 +278,19 @@ const handlefilterCategory = (value) => {
                   size={20}
                   onClick={() => handleEditClick(obj)}
                 />
-                <EditProduct
-                  isOpen={isEditProductOpen}
-                  onClose={onEditProductClose}
-                  selectedProduct={editingProduct}
-                  onProductUpdated={handleProductUpdated}
-                />
               </Button>
             </Flex>
             {selectedProduct.length - 1 !== index}
           </Box>
         ))}
       </Flex>
+        <EditProduct
+          isOpen={isEditProductOpen}
+          onClose={onEditProductClose}
+          selectedProduct={editingProduct}
+          onProductUpdated={handleProductUpdated}
+          onEditSuccess={handleEditProductSuccess}
+        />
       <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} selectedProduct={selectedProduct} />
       <Link>
         <Button
@@ -261,6 +309,7 @@ const handlefilterCategory = (value) => {
         <CreateProduct
           isOpen={isCreateProductOpen}
           onClose={onCreateProductClose}
+          onCreateSuccess={handleCreateProductSuccess}
         />
       </Link>
     </Box>

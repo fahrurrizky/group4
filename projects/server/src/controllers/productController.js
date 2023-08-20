@@ -5,7 +5,7 @@ const { Op } = require('sequelize')
 const fs = require('fs').promises
 const productController = {
   getProductList: async (req, res) => {
-    const { name, harga_produk, categoryId, orderBy, orderByName, page = 1, limit = 10 } = req.query;
+    const { name, harga_produk, categoryId, orderBy, orderByName, page = 1, limit = 12 } = req.query;
     const orderName = orderByName === 'name_asc' ? 'ASC' : 'DESC';
     const orderPrice =  orderBy === 'harga_produk_asc' ? 'ASC' : 'DESC';
     console.log('orderPrice', orderPrice)

@@ -56,6 +56,7 @@ const Profile = ({onCreatedSuccess}) => {
         duration: 2000,
       })
       console.log("Success");
+      fetchCashiers();
     } catch (error) {
       console.log(error);
       toast({
@@ -90,11 +91,10 @@ const Profile = ({onCreatedSuccess}) => {
                   boxShadow="lg"
                 />
               </Box>
-
               <Stack direction="column" spacing={4} textAlign="left" maxW="4xl">
                 <Icon as={ImQuotesLeft} w={10} h={10} color="white" />
-                <Text fontSize="md" fontWeight="medium">
-                Learn from a glass of liquor, the sweet and bitter are still enjoyed!. Likewise with life, bright or even gloomy, keep living it. Alcohol is perhaps man's worst enemy. But the Bible says, love your enemies. so do not let the brain sober
+                <Text fontSize="lg" fontWeight="medium" fontFamily={'initial'}>
+                <i>Learn from a glass of liquor, the sweet and bitter are still enjoyed!. Likewise with life, bright or even gloomy, keep living it. Alcohol is perhaps man's worst enemy. But the Bible says, love your enemies. so do not let the brain sober</i>
                 </Text>
                 <Stack alignItems={{ base: 'center', sm: 'flex-start' }} spacing={0}>
                   <Avatar
@@ -105,7 +105,7 @@ const Profile = ({onCreatedSuccess}) => {
                     src={`http://localhost:8000/api/${cashiers.imgProfile}`}
                     d={{ base: 'block', sm: 'none' }}
                   />
-                  <Text fontWeight="bold" fontSize="lg">
+                  <Text fontWeight="bold" fontSize="lg" fontFamily="cursive">
                     {cashiers.username}
                   </Text>
                   <Text fontWeight="medium" fontSize="sm" color="white">
@@ -113,11 +113,11 @@ const Profile = ({onCreatedSuccess}) => {
                     {cashiers.role}, The Majestic Mixer
                     </i>
                   </Text>
-                  <Flex>
-                    <Input color={"rgba(0,0,0,0)"} variant={'unstyled'} size={'xs'} type="file" width={'25%'} ref={fileInputRef} />
-                    <Button colorScheme="white" size="xs" variant={'outline'} onClick={handleImageUpload}>
+                  <Flex mt={'1'}>
+                    <Button colorScheme="white" size="xs" variant={'outline'} onClick={handleImageUpload} width={'40%'}>
                       <i>Change Avatar</i>
                     </Button>
+                    <Input variant={'unstyled'} size={'xs'} type="file" ref={fileInputRef} />
                   </Flex>
                 </Stack>
               </Stack>

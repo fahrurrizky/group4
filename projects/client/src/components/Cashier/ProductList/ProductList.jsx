@@ -24,7 +24,9 @@ export default function Product() {
   const bgColor = useColorModeValue("rgb(255,255,255, 0.9)", "gray.800");
   const [product, setProduct] = useState([]);
   const [quantities, setQuantities] = useState([]); // Initialize quantities state
-
+  const [cartItems, setCartItems] = useState([]);
+  // Initialize an array of hovered states
+  const [hoveredStates, setHoveredStates] = useState(new Array(product.length).fill(false));
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState([]);
   const [price, setPrice] = useState('');
@@ -37,18 +39,37 @@ export default function Product() {
     setQuantities(initialQuantities);
   }, [product]);
 
-  useEffect(() => {
-    fetchProduct();
-  }, [currentPage, price, category, name]);
-
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/product/all?page=${currentPage}&&name=${searchQuery}&&orderBy=${price}&&categoryId=${category}&&orderByName=${name}`);
+      let apiUrl = `http://localhost:8000/product/all?page=${currentPage}`;
+  
+      if (searchQuery) {
+        apiUrl += `&name=${searchQuery}`;
+      }
+  
+      if (price) {
+        apiUrl += `&orderBy=${price}`;
+      }
+  
+      if (category) {
+        apiUrl += `&categoryId=${category}`;
+      }
+  
+      if (name) {
+        apiUrl += `&orderByName=${name}`;
+      }
+  
+      const response = await axios.get(apiUrl);
       setProduct(response.data.productList);
-    } catch (error) {
-      console.error("Error fetching product:", error);
+    } catch (err) {
+      console.log(err);
     }
   };
+  
+
+  useEffect(() => {
+    fetchProduct();
+  }, [currentPage, price, category, name, searchQuery]);
 
   const handleAddToCart = async (productId, index) => {
     // Pass the index of the product
@@ -74,6 +95,7 @@ export default function Product() {
         },
         config
       );
+      setCartItems(response.data.cartItems);
       toast({
         title: "Item Added to Cart",
         description: "The item has been added to your cart.",
@@ -97,9 +119,21 @@ const handlefilterCategory = (value) => {
   setCategory(value);
 }
 
+const handleHover = (index) => {
+  const newHoveredStates = [...hoveredStates];
+  newHoveredStates[index] = true;
+  setHoveredStates(newHoveredStates);
+};
+
+const handleMouseLeave = (index) => {
+  const newHoveredStates = [...hoveredStates];
+  newHoveredStates[index] = false;
+  setHoveredStates(newHoveredStates);
+};
+
   return (
     <Box>
-      <Box width={'98%'} m={'4'}>
+            <Box width={'98%'} m={'4'}>
               <InputGroup borderRadius={"full"} size="sm">
                 <InputLeftElement
                   pointerEvents="none"
@@ -107,7 +141,7 @@ const handlefilterCategory = (value) => {
                 />
                 <Input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search product..."
                   border="1px solid white"
                   rounded={"full"}
                   value={searchQuery}
@@ -167,7 +201,12 @@ const handlefilterCategory = (value) => {
                 objectFit="contain"
                 src={`http://localhost:8000/${obj.productImg}`}
                 alt="#"
+                onMouseEnter={() => handleHover(index)} // Pass the index to handleHover
+                onMouseLeave={() => handleMouseLeave(index)} // Pass the index to handleMouseLeave
+                zIndex={hoveredStates[index] ? 1 : -1}
+                transform={hoveredStates[index] ? 'scale(1.5)' : 'scale(1)'}
               />
+
             </Box>
             <Stack pt={2} align="center">
               <Text

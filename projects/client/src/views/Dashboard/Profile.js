@@ -15,11 +15,11 @@ interface TestimonialAttributes {
 
 const testimonials: TestimonialAttributes[] = [
   {
-    name: 'Andre Widyatmoko',
+    name: 'Elliot_Alderson',
     position: 'Admin',
     company: 'The Majestic Mixer',
     image:
-      'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb',
+      'https://i.pinimg.com/originals/47/e8/84/47e88418ed8aa4e79466f09d74698e6d.jpg',
     content:
       "Learn from a glass of liquor, the sweet and bitter are still enjoyed!. Likewise with life, bright or even gloomy, keep living it. Alcohol is perhaps man's worst enemy. But the Bible says, love your enemies. so do not let the brain sober"
   }
@@ -52,8 +52,8 @@ const Profile = () => {
 
             <Stack direction="column" spacing={4} textAlign="left" maxW="4xl">
               <Icon as={ImQuotesLeft} w={10} h={10} color="white" />
-              <Text fontSize="md" fontWeight="medium">
-                {obj.content}
+              <Text fontSize="lg" fontWeight="medium" fontFamily={'initial'}>
+                <i>{obj.content}</i>
               </Text>
               <Stack alignItems={{ base: 'center', sm: 'flex-start' }} spacing={0}>
                 <Avatar
@@ -64,7 +64,7 @@ const Profile = () => {
                   src={obj.image}
                   d={{ base: 'block', sm: 'none' }}
                 />
-                <Text fontWeight="bold" fontSize="lg">
+                <Text mt={'3'} fontWeight="bold" fontSize="lg" fontFamily="cursive">
                   {obj.name}
                 </Text>
                 <Text fontWeight="medium" fontSize="sm" color="white">
@@ -72,12 +72,12 @@ const Profile = () => {
                   {obj.position}, {obj.company}
                   </i>
                 </Text>
-                <Flex>
+                {/* <Flex>
                 <Input color={"rgba(0,0,0,0)"} variant={'unstyled'} size={'xs'} type="file" width={'25%'} />
                 <Button colorScheme="white" size="xs" variant={'outline'}>
                 <i>Change Avatar</i>
                 </Button>
-                </Flex>
+                </Flex> */}
               </Stack>
             </Stack>
           </Stack>

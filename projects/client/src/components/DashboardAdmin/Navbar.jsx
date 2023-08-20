@@ -43,15 +43,17 @@ export default function Navbar() {
                 <Avatar
                   size={"md"}
                   src={
-                    "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb"
+                    "https://i.pinimg.com/originals/47/e8/84/47e88418ed8aa4e79466f09d74698e6d.jpg"
                   }
                 />
               </MenuButton>
               <Text fontSize={"sm"} ml={"3"}>
-                <Box fontWeight={"bold"} fontSize={"md"}>
-                  Andre Widyatmoko
+                <Box fontWeight={"bold"} fontSize={"lg"}fontFamily="cursive">
+                Elliot_Alderson
                 </Box>{" "}
-                Your Admin
+                <i>
+                 Admin, The Majestic Mixer
+                </i>
               </Text>
               <MenuList zIndex={900000} bgColor={"rgba(0,0,0, 0.5)"}>
                 <MenuItem bgColor={"rgba(0,0,0, 0.5)"}>Link 1</MenuItem>

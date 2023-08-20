@@ -19,7 +19,6 @@ import axios from "axios";
 
 const CategoryList = ({price, setPrice, handleSortPrice, category, handleFilterCategory, setCategory, handleSortName, setName, name}) => {
 const [categories, setCategories] = useState([]);
-console.log("categories", category);
   const fetchCategory = async () => {
     try {
       const {data} = await axios.get(`http://localhost:8000/product/categories`);
@@ -45,14 +44,23 @@ console.log("categories", category);
     onClose: onEditCategoryClose,
   } = useDisclosure();
 
-  // const [categories, setCategories] = useState([]);
-
+  const handleToggleCategory = (categoryId) => {
+    if (category === categoryId) {
+      setCategory(null); // Clear the category if it's already selected
+    } else {
+      setCategory(categoryId); // Set the selected category
+    }
+  };
 
   const handleCreateCategorySuccess = () => {
     fetchCategory(); // Refresh the category list
     onCreateCategoryClose(); // Close the create category modal
   };
-  
+  const handleEditCategorySuccess = () => {
+    fetchCategory(); // Refresh the category list
+    onEditCategoryClose(); // Close the create category modal
+  };
+
   return (
     <Box mb={'10'}>
       <Box ml={'5'} mb={'3'} mt={"5"} style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -80,23 +88,18 @@ console.log("categories", category);
             >
               <BiAddToQueue /> &nbsp;Create Category
             </MenuItem>
-            <MenuItem bgColor={"rgba(0,0,0, 0.5)"} onClick={onEditCategoryOpen}>
+            <MenuItem bgColor={"rgba(0,0,0, 0.5)"} onClick={onEditCategoryOpen} onCreateSuccess={handleCreateCategorySuccess}>
               <BiEdit /> &nbsp;Edit Category
             </MenuItem>
           </MenuList>
         </Menu>
       </Box>
-      <EditCategory isOpen={isEditCategoryOpen} onClose={onEditCategoryClose} />
+      <EditCategory isOpen={isEditCategoryOpen} onClose={onEditCategoryClose} onEditSuccess={handleEditCategorySuccess} onCreateSuccess={handleCreateCategorySuccess}/>
       <CreateCategory
         isOpen={isCreateCategoryOpen}
         onClose={onCreateCategoryClose}
         onCreateSuccess={handleCreateCategorySuccess}
       />
-      {/* <CreateCategory
-        isOpen={isCreateCategoryOpen}
-        onClose={onCreateCategoryClose}
-        onCreateSuccess={handleCreateCategorySuccess}
-      /> */}
       <Grid
         gap={"5"}
         fontFamily={"monospace"}
@@ -105,20 +108,21 @@ console.log("categories", category);
         templateColumns="repeat(5, 1fr)"
       >
         {categories.map((item) => (
-
-        <Button key={item.id}
-          variant={"outline"}
-          size={"sm"}
-          textColor="white"
-          w="100%"
-          _hover={{ bgColor: "white", color: "black" }}
-          textTransform={"uppercase"}
-          value={category}
-          onClick={() => setCategory(item.id)}
-        >
-          {item.name}
-        </Button>
-
+        <Button
+        key={item.name}
+        variant={"outline"}
+        size={"sm"}
+        textColor={category === item.id ? "black" : "white"} // Change text color based on selection
+        bgColor={category === item.id ? "white" : "transparent"} // Change background color based on selection
+        w="100%"
+        _hover={{ bgColor: "white", color: "black" }}
+        _active={{ bgColor: "lightblue", color: "black" }} // Apply light-up effect when button is clicked
+        textTransform={"uppercase"}
+        value={category}
+        onClick={() => handleToggleCategory(item.id)} // Toggle the category selection
+      >
+        {item.name}
+      </Button>
         ))}
       </Grid>
     </Box>

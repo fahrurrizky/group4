@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 
-export default function CreateProduct({ isOpen, onClose }) {
+export default function CreateProduct({ isOpen, onClose, onCreateSuccess }) {
   const [categories, setCategories] = useState([]);
   const toast = useToast()
   const [formData, setFormData] = useState({
@@ -77,12 +77,20 @@ export default function CreateProduct({ isOpen, onClose }) {
       title: 'Product Created',
       description: 'Your product has been successfully created.',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       isClosable: true,
     });
       onClose();
+      onCreateSuccess();
     } catch (error) {
       console.error('Error creating product:', error);
+      toast({
+        title: 'Product Created',
+        description: 'There is something wrong, make sure again the data you input',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -116,20 +124,24 @@ export default function CreateProduct({ isOpen, onClose }) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel><i>Category ID</i></FormLabel>
+              <FormLabel><i>Category</i></FormLabel>
               {/* <Input
               type="text"
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
             /> */}
-
               <Select
                 name="categoryId"
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  const categoryId = e.target.value; // Extract the selected category ID
+                  handleInputChange({ target: { name: 'categoryId', value: categoryId } }); // Update categoryId in formData
+                }}
               >
                 {categories.map((item) => (
-                <option  key={item.id} value={item.id}>{item.name}</option>
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
                 ))}
               </Select>
             </FormControl>

@@ -11,16 +11,17 @@ import {
   FormControl,
   FormLabel,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
 
 
-const EditCashier = ({ isOpen, onClose, cashier, onUpdate }) => {
+const EditCashier = ({ isOpen, onClose, cashier, onUpdate, onEditSuccess }) => {
   const [currentUsername, setCurrentUsername] = useState('');
   const [currentEmail, setCurrentEmail] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail] = useState('');
-
+  const toast = useToast();
   // Update cashier data when modal is opened
   useEffect(() => {
     setCurrentUsername(cashier.username);
@@ -40,10 +41,21 @@ const EditCashier = ({ isOpen, onClose, cashier, onUpdate }) => {
       console.log(response.data); // Log the response data (optional)
       onUpdate(); // Call the onUpdate function to update cashier data in parent component
       onClose(); // Close the modal
-      window.alert('Data updated successfully!')
+      onEditSuccess();
+      toast({
+        title: 'Data updated successfully!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log(error); // Handle the error (optional)
-      window.alert('Failed to update data!')
+      toast({
+        title: 'Failed to update data!',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

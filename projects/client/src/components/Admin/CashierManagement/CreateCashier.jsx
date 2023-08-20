@@ -19,7 +19,7 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { useState } from 'react';
 import axios from 'axios';
 
-const CreateCashier = ({ isOpen, onClose }) => {
+const CreateCashier = ({ isOpen, onClose, onCreateSuccess }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -53,6 +53,7 @@ const CreateCashier = ({ isOpen, onClose }) => {
       setEmail('');
       setPassword('');
       onClose();
+      onCreateSuccess()
       toast({
         title: "Cashier Created",
         description: "The cashier account has been successfully created.",

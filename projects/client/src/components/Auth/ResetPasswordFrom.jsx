@@ -49,7 +49,7 @@ const ResetPasswordForm = () => {
       .then(function (response) {
         console.log(response.data);
         setSubmitting(false);
-        navigate("/login");
+        navigate("/");
         toast({
           title: "Password successfully changed",
           status: "success",
